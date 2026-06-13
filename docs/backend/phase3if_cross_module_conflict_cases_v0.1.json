@@ -1,0 +1,162 @@
+{
+  "version": "0.1",
+  "phase": "Phase 3-I-F",
+  "name": "cross_module_conflict_cases",
+  "description": "Quality / Logistics / Price / Spec cross-module conflict routing cases.",
+  "metadata_requirements": [
+    "retrieval_selected_module",
+    "retrieval_source",
+    "retrieval_collection_name",
+    "retrieval_hit_count"
+  ],
+  "module_collections": {
+    "quality": "quality_kb_v1",
+    "logistics": "logistics_kb_v1",
+    "price": "price_kb_v1",
+    "spec": "spec_kb_v1"
+  },
+  "module_sources": {
+    "quality": "real_quality_kb",
+    "logistics": "real_logistics_kb",
+    "price": "real_price_kb",
+    "spec": "real_spec_kb"
+  },
+  "forbidden_response_fragments": [
+    "最低价给你",
+    "全网最低",
+    "一定包邮",
+    "今天一定发",
+    "明天一定到",
+    "三天必到",
+    "万能适配",
+    "百分百适配",
+    "一定适配",
+    "保证适配",
+    "永不生锈",
+    "十万公里没问题",
+    "一定赔",
+    "一定补发"
+  ],
+  "cases": [
+    {
+      "case_id": "CONFLICT_001",
+      "query": "SKU001多少钱，螺纹是什么规格？",
+      "expected_module": "price",
+      "conflict_type": "price_spec",
+      "risk_tags": ["price_commitment", "spec_reference"],
+      "reason": "涉及价格，Price 优先；规格只能作为补充信息。"
+    },
+    {
+      "case_id": "CONFLICT_002",
+      "query": "SKU001适配我的车型吗？今天能发吗？",
+      "expected_module": "spec",
+      "conflict_type": "spec_logistics",
+      "risk_tags": ["fitment_commitment", "shipping_commitment"],
+      "reason": "未确认适配前不应推进发货承诺。"
+    },
+    {
+      "case_id": "CONFLICT_003",
+      "query": "这个球头能通用适配吗？质量能保证吗？",
+      "expected_module": "spec",
+      "conflict_type": "spec_quality",
+      "risk_tags": ["fitment_commitment", "quality_commitment"],
+      "reason": "适配风险高于一般质量说明。"
+    },
+    {
+      "case_id": "CONFLICT_004",
+      "query": "便宜点能包邮吗？",
+      "expected_module": "price",
+      "conflict_type": "price_logistics",
+      "risk_tags": ["discount_commitment", "shipping_fee_commitment"],
+      "reason": "优惠和包邮均可能构成价格承诺，Price 优先。"
+    },
+    {
+      "case_id": "CONFLICT_005",
+      "query": "如果质量有问题是不是一定赔？",
+      "expected_module": "logistics",
+      "conflict_type": "logistics_quality",
+      "risk_tags": ["compensation_commitment", "quality_issue"],
+      "reason": "赔付/补发属于履约处置边界，Logistics 优先。"
+    },
+    {
+      "case_id": "CONFLICT_006",
+      "query": "M10球头多少钱？",
+      "expected_module": "price",
+      "conflict_type": "price_spec",
+      "risk_tags": ["price_commitment", "spec_signal"],
+      "reason": "M10 是规格信号，但多少钱是价格强信号。"
+    },
+    {
+      "case_id": "CONFLICT_007",
+      "query": "SKU001是不是不锈钢，能不能优惠？",
+      "expected_module": "price",
+      "conflict_type": "price_quality",
+      "risk_tags": ["discount_commitment", "material_claim"],
+      "reason": "优惠是高风险价格信号，Price 优先。"
+    },
+    {
+      "case_id": "CONFLICT_008",
+      "query": "SKU001表面处理是什么，多久能到？",
+      "expected_module": "logistics",
+      "conflict_type": "logistics_quality",
+      "risk_tags": ["delivery_time", "surface_treatment"],
+      "reason": "到货时效是履约信号，Logistics 优先。"
+    },
+    {
+      "case_id": "CONFLICT_009",
+      "query": "全网最低价的M12球头有吗？",
+      "expected_module": "price",
+      "conflict_type": "price_spec",
+      "risk_tags": ["lowest_price_commitment", "spec_signal"],
+      "reason": "最低价为价格风险强信号。"
+    },
+    {
+      "case_id": "CONFLICT_010",
+      "query": "这个保证适配并且明天到吗？",
+      "expected_module": "spec",
+      "conflict_type": "spec_logistics",
+      "risk_tags": ["fitment_commitment", "delivery_commitment"],
+      "reason": "保证适配风险最高，Spec 优先核对。"
+    },
+    {
+      "case_id": "CONFLICT_011",
+      "query": "会不会生锈，坏了能补发吗？",
+      "expected_module": "logistics",
+      "conflict_type": "logistics_quality",
+      "risk_tags": ["resend_commitment", "quality_claim"],
+      "reason": "补发属于履约处置边界。"
+    },
+    {
+      "case_id": "CONFLICT_012",
+      "query": "这个材质能用十万公里吗，多少钱？",
+      "expected_module": "price",
+      "conflict_type": "price_quality",
+      "risk_tags": ["price_commitment", "lifetime_commitment"],
+      "reason": "价格优先，同时质量寿命承诺需禁止。"
+    },
+    {
+      "case_id": "CONFLICT_013",
+      "query": "OEM号能查吗？查到后能直接报价吗？",
+      "expected_module": "price",
+      "conflict_type": "price_spec",
+      "risk_tags": ["direct_quote", "oem_lookup"],
+      "reason": "直接报价为价格风险强信号。"
+    },
+    {
+      "case_id": "CONFLICT_014",
+      "query": "包邮的SKU001有现货规格吗？",
+      "expected_module": "logistics",
+      "conflict_type": "logistics_spec",
+      "risk_tags": ["shipping_fee_commitment", "stock_spec"],
+      "reason": "包邮为物流/运费承诺风险。"
+    },
+    {
+      "case_id": "CONFLICT_015",
+      "query": "万能适配的有没有便宜款？",
+      "expected_module": "spec",
+      "conflict_type": "spec_price",
+      "risk_tags": ["universal_fitment", "discount_signal"],
+      "reason": "万能适配为适配高风险，先进入 Spec 核对。"
+    }
+  ]
+}

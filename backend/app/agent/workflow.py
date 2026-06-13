@@ -209,6 +209,7 @@ class AgentWorkflowNodes:
         """Retrieve RAG evidence chunks through Qdrant with local fallback."""
 
         new_state = _copy_state(state)
+        new_state = _apply_unified_kb_routing(new_state)
         quality_state, real_quality_kb_used = _try_real_quality_kb_retrieval(
             dict(new_state)
         )
@@ -1870,6 +1871,9 @@ def _force_logistics_route_for_delivery_question(
 
     new_state = cast(AgentState, dict(state))
     metadata = _ensure_metadata(new_state)
+    if metadata.get("unified_kb_router_used") is True:
+        return new_state
+
 
     new_state["intent"] = "logistics"
     new_state["selected_module"] = "logistics"
@@ -2130,6 +2134,9 @@ def _force_spec_route_for_spec_kb_question(
 
     new_state = cast(AgentState, dict(state))
     metadata = _ensure_metadata(new_state)
+    if metadata.get("unified_kb_router_used") is True:
+        return new_state
+
     query = _state_current_query_for_spec_retrieval(new_state)
     normalized_query = query.strip().lower()
 
@@ -2164,3 +2171,53 @@ def _force_spec_route_for_spec_kb_question(
     metadata["spec_route_override_reason"] = "spec_kb_signal"
 
     return new_state
+
+
+def _apply_unified_kb_routing(
+    state: AgentState,
+) -> AgentState:
+    """Apply unified KB routing decision before real KB retrieval."""
+
+    from app.agent.routing.unified_kb_router import route_query_to_kb
+
+    new_state = cast(AgentState, dict(state))
+    metadata = _ensure_metadata(new_state)
+
+    query = _state_current_query_for_unified_kb_routing(new_state)
+    decision = route_query_to_kb(query)
+
+    metadata["unified_kb_router_enabled"] = True
+    metadata["unified_kb_router_used"] = decision.selected_module is not None
+    metadata["unified_kb_selected_module"] = decision.selected_module
+    metadata["unified_kb_candidate_modules"] = decision.candidate_modules
+    metadata["unified_kb_conflict_type"] = decision.conflict_type
+    metadata["unified_kb_matched_signals"] = decision.matched_signals
+    metadata["unified_kb_reason"] = decision.reason
+    metadata["unified_kb_risk_tags"] = decision.risk_tags
+
+    if decision.selected_module is None:
+        return new_state
+
+    state_extras = cast(dict[str, Any], new_state)
+    state_extras["selected_module"] = decision.selected_module
+    state_extras["intent"] = decision.selected_module
+    state_extras["candidate_modules"] = decision.candidate_modules
+    state_extras["routing_conflict_type"] = decision.conflict_type
+    state_extras["routing_reason"] = decision.reason
+    state_extras["routing_risk_tags"] = decision.risk_tags
+
+    return new_state
+
+
+def _state_current_query_for_unified_kb_routing(
+    state: AgentState,
+) -> str:
+    """Return current query text for unified KB routing."""
+
+    for key in ("user_text", "current_message", "user_message", "query"):
+        value = state.get(key)
+
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+
+    return ""
