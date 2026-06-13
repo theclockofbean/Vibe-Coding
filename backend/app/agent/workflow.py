@@ -210,6 +210,7 @@ class AgentWorkflowNodes:
 
         new_state = _copy_state(state)
         new_state = _apply_unified_kb_routing(new_state)
+        new_state = _apply_answer_strategy_metadata(new_state)
         quality_state, real_quality_kb_used = _try_real_quality_kb_retrieval(
             dict(new_state)
         )
@@ -467,6 +468,7 @@ class AgentWorkflowNodes:
 
         try:
             render_input, render_output = _run_grounded_render_for_state(new_state)
+            render_output = _apply_answer_strategy_render_gate(new_state, render_output)
 
             new_state["render_input"] = render_input
             new_state["render_output"] = render_output
@@ -2221,3 +2223,271 @@ def _state_current_query_for_unified_kb_routing(
             return value.strip()
 
     return ""
+
+
+def _apply_answer_strategy_metadata(
+    state: AgentState,
+) -> AgentState:
+    """Apply multi-module answer strategy metadata."""
+
+    from app.agent.answering.multimodule_answer_strategy import (
+        decide_answer_strategy,
+    )
+
+    new_state = cast(AgentState, dict(state))
+    metadata = _ensure_metadata(new_state)
+    state_extras = cast(dict[str, Any], new_state)
+
+    query = _state_current_query_for_unified_kb_routing(new_state)
+    selected_module = _state_selected_module_for_answer_strategy(new_state)
+    candidate_modules = _state_candidate_modules_for_answer_strategy(new_state)
+    conflict_type = _state_conflict_type_for_answer_strategy(new_state)
+
+    decision = decide_answer_strategy(
+        query=query,
+        selected_module=selected_module,
+        candidate_modules=candidate_modules,
+        conflict_type=conflict_type,
+    )
+
+    metadata.update(decision.to_metadata())
+
+    state_extras["answer_strategy_mode"] = decision.strategy_mode
+    state_extras["answer_primary_module"] = decision.primary_module
+    state_extras["answer_candidate_modules"] = decision.candidate_modules
+    state_extras["answer_boundary_notes"] = decision.boundary_notes
+    state_extras["answer_split_required"] = decision.split_required
+    state_extras["answer_handoff_required"] = decision.handoff_required
+    state_extras["answer_safety_blocked"] = decision.safety_blocked
+    state_extras["answer_forbidden_commitment_detected"] = (
+        decision.forbidden_commitment_detected
+    )
+
+    return new_state
+
+
+def _state_selected_module_for_answer_strategy(
+    state: AgentState,
+) -> str | None:
+    """Return selected module for answer strategy."""
+
+    metadata = _ensure_metadata(state)
+    state_extras = cast(dict[str, Any], state)
+
+    value = (
+        state_extras.get("selected_module")
+        or metadata.get("unified_kb_selected_module")
+        or metadata.get("retrieval_selected_module")
+    )
+
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+
+    return None
+
+
+def _state_candidate_modules_for_answer_strategy(
+    state: AgentState,
+) -> list[str]:
+    """Return candidate modules for answer strategy."""
+
+    metadata = _ensure_metadata(state)
+    state_extras = cast(dict[str, Any], state)
+
+    value = (
+        state_extras.get("candidate_modules")
+        or metadata.get("unified_kb_candidate_modules")
+        or metadata.get("routing_candidate_modules")
+    )
+
+    if not isinstance(value, list):
+        selected_module = _state_selected_module_for_answer_strategy(state)
+        return [selected_module] if selected_module else []
+
+    return [
+        str(item).strip()
+        for item in value
+        if isinstance(item, str) and item.strip()
+    ]
+
+
+def _state_conflict_type_for_answer_strategy(
+    state: AgentState,
+) -> str | None:
+    """Return conflict type for answer strategy."""
+
+    metadata = _ensure_metadata(state)
+    state_extras = cast(dict[str, Any], state)
+
+    value = (
+        state_extras.get("routing_conflict_type")
+        or metadata.get("unified_kb_conflict_type")
+        or metadata.get("routing_conflict_type")
+    )
+
+    if isinstance(value, str) and value.strip():
+        return value.strip()
+
+    return None
+
+
+def _apply_answer_strategy_render_gate(
+    state: AgentState,
+    render_output: dict[str, Any],
+) -> dict[str, Any]:
+    """Apply answer strategy gate to grounded render output."""
+
+    metadata = _ensure_metadata(state)
+    gated_output = dict(render_output)
+    render_metadata = _as_dict(gated_output.get("metadata"))
+
+    strategy_mode = _optional_text(metadata.get("answer_strategy_mode"))
+    boundary_notes = _as_text_list(metadata.get("answer_boundary_notes"))
+    safety_blocked = metadata.get("answer_safety_blocked") is True
+    handoff_required = metadata.get("answer_handoff_required") is True
+    split_required = metadata.get("answer_split_required") is True
+
+    if safety_blocked or handoff_required:
+        gated_output["final_response"] = _answer_strategy_safety_response(metadata)
+        gated_output["needs_handoff"] = True
+        gated_output["is_grounded"] = False
+        gated_output["used_llm_output"] = False
+
+        render_metadata["render_mode"] = "answer_strategy_safety_blocked"
+        render_metadata["render_safety_blocked"] = True
+        render_metadata["render_fallback_reason"] = "answer_strategy_gate"
+
+        gated_output["metadata"] = render_metadata
+        gated_output["response_warnings"] = _merge_text_lists(
+            _as_text_list(gated_output.get("response_warnings")),
+            ["answer strategy safety gate applied"],
+        )
+        gated_output["risk_flags"] = _merge_text_lists(
+            _as_text_list(gated_output.get("risk_flags")),
+            ["answer_strategy_safety_blocked"],
+        )
+
+        return gated_output
+
+    if split_required:
+        gated_output["final_response"] = _answer_strategy_split_response(metadata)
+        gated_output["needs_handoff"] = False
+        gated_output["is_grounded"] = False
+        gated_output["used_llm_output"] = False
+
+        render_metadata["render_mode"] = "answer_strategy_split_required"
+        render_metadata["render_safety_blocked"] = False
+        render_metadata["render_fallback_reason"] = "answer_strategy_split_required"
+
+        gated_output["metadata"] = render_metadata
+        gated_output["response_warnings"] = _merge_text_lists(
+            _as_text_list(gated_output.get("response_warnings")),
+            ["answer strategy split gate applied"],
+        )
+
+        return gated_output
+
+    if strategy_mode == "primary_with_boundary_note" and boundary_notes:
+        final_response = _optional_text(gated_output.get("final_response")) or ""
+
+        if final_response:
+            gated_output["final_response"] = _append_answer_strategy_boundary_notes(
+                final_response=final_response,
+                boundary_notes=boundary_notes,
+            )
+
+            render_metadata["render_answer_strategy_gate_applied"] = True
+            render_metadata["render_answer_strategy_boundary_note_count"] = len(
+                boundary_notes
+            )
+            gated_output["metadata"] = render_metadata
+
+    return gated_output
+
+
+def _answer_strategy_safety_response(
+    metadata: dict[str, Any],
+) -> str:
+    """Build safety-blocked answer strategy response."""
+
+    forbidden_fragments = _as_text_list(metadata.get("answer_forbidden_fragments"))
+
+    if forbidden_fragments:
+        return (
+            "该问题涉及高风险业务承诺，不能直接给出确定性答复。"
+            "请转人工结合正式数据、业务规则和授权信息确认后再回复。"
+        )
+
+    return (
+        "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。"
+        "为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+    )
+
+
+def _answer_strategy_split_response(
+    metadata: dict[str, Any],
+) -> str:
+    """Build split-required answer strategy response."""
+
+    candidate_modules = _as_text_list(metadata.get("answer_candidate_modules"))
+
+    if candidate_modules:
+        return (
+            "识别到多个业务问题："
+            + "、".join(candidate_modules)
+            + "。当前不自动合并多个模块回答，请拆分为规格、价格、物流或质量中的一个问题后重新提问。"
+        )
+
+    return "当前问题包含多个业务方向，请拆分为规格、价格、物流或质量中的一个问题后重新提问。"
+
+
+def _append_answer_strategy_boundary_notes(
+    *,
+    final_response: str,
+    boundary_notes: list[str],
+) -> str:
+    """Append answer strategy boundary notes to final response."""
+
+    unique_notes = [
+        note
+        for note in _deduplicate_text_list(boundary_notes)
+        if note and note not in final_response
+    ]
+
+    if not unique_notes:
+        return final_response
+
+    return final_response.rstrip() + "\n\n补充边界：" + "；".join(unique_notes)
+
+
+def _as_dict(
+    value: object,
+) -> dict[str, Any]:
+    """Return value as dict or empty dict."""
+
+    if isinstance(value, dict):
+        return cast(dict[str, Any], value)
+
+    return {}
+
+
+def _optional_text(
+    value: object,
+) -> str | None:
+    """Return stripped text or None."""
+
+    if not isinstance(value, str):
+        return None
+
+    stripped = value.strip()
+
+    return stripped or None
+
+
+def _merge_text_lists(
+    left: list[str],
+    right: list[str],
+) -> list[str]:
+    """Merge and deduplicate two text lists."""
+
+    return _deduplicate_text_list([*left, *right])

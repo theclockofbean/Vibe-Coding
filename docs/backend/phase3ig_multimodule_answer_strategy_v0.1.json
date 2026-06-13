@@ -1,0 +1,144 @@
+{
+  "version": "0.1",
+  "phase": "Phase 3-I-G",
+  "name": "multimodule_answer_strategy",
+  "description": "Answer strategy for multi-module KB routing across Quality, Logistics, Price and Spec.",
+  "principles": [
+    "LLM 不是事实来源",
+    "RAG 不是承诺来源",
+    "业务承诺只能来自结构化规则、人工确认或明确授权的数据表",
+    "多模块问题默认不自动合并为完整业务承诺",
+    "高风险承诺优先触发安全边界",
+    "次模块信息只能作为补充说明或需要补充的信息，不能形成承诺"
+  ],
+  "strategy_modes": {
+    "single_primary": {
+      "description": "Only one safe primary module should answer.",
+      "allow_secondary_answer": false,
+      "split_required": false,
+      "handoff_required": false,
+      "safety_blocked": false
+    },
+    "primary_with_boundary_note": {
+      "description": "Answer primary module and add a short boundary note for secondary modules.",
+      "allow_secondary_answer": false,
+      "split_required": false,
+      "handoff_required": false,
+      "safety_blocked": false
+    },
+    "split_required": {
+      "description": "Ask user to split multiple parallel business questions.",
+      "allow_secondary_answer": false,
+      "split_required": true,
+      "handoff_required": false,
+      "safety_blocked": false
+    },
+    "safety_blocked": {
+      "description": "Do not provide risky commitment; guide to manual confirmation.",
+      "allow_secondary_answer": false,
+      "split_required": false,
+      "handoff_required": true,
+      "safety_blocked": true
+    },
+    "handoff_required": {
+      "description": "Manual confirmation is required before answering.",
+      "allow_secondary_answer": false,
+      "split_required": false,
+      "handoff_required": true,
+      "safety_blocked": false
+    }
+  },
+  "module_pair_rules": [
+    {
+      "selected_module": "price",
+      "candidate_modules": ["price", "spec"],
+      "strategy_mode": "primary_with_boundary_note",
+      "boundary_note_type": "spec_as_reference_only"
+    },
+    {
+      "selected_module": "price",
+      "candidate_modules": ["price", "quality"],
+      "strategy_mode": "primary_with_boundary_note",
+      "boundary_note_type": "quality_as_reference_only"
+    },
+    {
+      "selected_module": "price",
+      "candidate_modules": ["price", "logistics"],
+      "strategy_mode": "safety_blocked",
+      "boundary_note_type": "price_logistics_commitment_risk"
+    },
+    {
+      "selected_module": "spec",
+      "candidate_modules": ["spec", "logistics"],
+      "strategy_mode": "primary_with_boundary_note",
+      "boundary_note_type": "logistics_after_fitment_confirmation"
+    },
+    {
+      "selected_module": "spec",
+      "candidate_modules": ["spec", "quality"],
+      "strategy_mode": "primary_with_boundary_note",
+      "boundary_note_type": "quality_not_fitment_commitment"
+    },
+    {
+      "selected_module": "spec",
+      "candidate_modules": ["spec", "price"],
+      "strategy_mode": "safety_blocked",
+      "boundary_note_type": "fitment_before_price_commitment"
+    },
+    {
+      "selected_module": "logistics",
+      "candidate_modules": ["logistics", "quality"],
+      "strategy_mode": "primary_with_boundary_note",
+      "boundary_note_type": "quality_issue_not_compensation_commitment"
+    },
+    {
+      "selected_module": "logistics",
+      "candidate_modules": ["logistics", "spec"],
+      "strategy_mode": "primary_with_boundary_note",
+      "boundary_note_type": "spec_as_shipping_context"
+    },
+    {
+      "selected_module": "logistics",
+      "candidate_modules": ["logistics", "price"],
+      "strategy_mode": "safety_blocked",
+      "boundary_note_type": "shipping_fee_price_commitment_risk"
+    },
+    {
+      "selected_module": "quality",
+      "candidate_modules": ["quality"],
+      "strategy_mode": "single_primary",
+      "boundary_note_type": "none"
+    }
+  ],
+  "high_risk_fragments": [
+    "最低价",
+    "全网最低",
+    "一定包邮",
+    "今天一定发",
+    "明天一定到",
+    "万能适配",
+    "保证适配",
+    "永不生锈",
+    "十万公里",
+    "一定赔",
+    "一定补发"
+  ],
+  "forbidden_fusion_patterns": [
+    "包邮价",
+    "适配后马上发",
+    "高质量低价",
+    "一定赔",
+    "一定补发",
+    "保证适配且质量没问题"
+  ],
+  "metadata_fields": [
+    "answer_strategy_mode",
+    "answer_primary_module",
+    "answer_candidate_modules",
+    "answer_boundary_notes",
+    "answer_split_required",
+    "answer_handoff_required",
+    "answer_safety_blocked",
+    "answer_forbidden_commitment_detected"
+  ]
+}
