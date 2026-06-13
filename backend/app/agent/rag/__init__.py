@@ -39,6 +39,8 @@ from app.agent.rag.schemas import (
 )
 
 __all__ = [
+    "PriceKBQdrantRetriever",
+    "PriceKBHit",
     "DEFAULT_COLLECTION_NAME",
     "DEFAULT_QDRANT_COLLECTION",
     "DEFAULT_QDRANT_DISTANCE",
@@ -71,6 +73,7 @@ from app.agent.rag.logistics_kb_retriever import (
     LogisticsKBHit,
     LogisticsKBQdrantRetriever,
 )
+from app.agent.rag.price_kb_retriever import PriceKBHit, PriceKBQdrantRetriever
 
 from .quality_kb_retriever import QualityKBHit as QualityKBHit
 from .quality_kb_retriever import QualityKBQdrantRetriever as QualityKBQdrantRetriever
