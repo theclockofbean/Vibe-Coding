@@ -1,0 +1,17 @@
+services:
+  bge-m3-embedding:
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-ipex-latest
+    container_name: ai-kb-bge-m3-embedding
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8088:80"
+    volumes:
+      - ai_kb_bge_m3_cache:/data
+    command:
+      - "--model-id"
+      - "BAAI/bge-m3"
+      - "--auto-truncate"
+
+volumes:
+  ai_kb_bge_m3_cache:
+    name: ai_kb_bge_m3_cache

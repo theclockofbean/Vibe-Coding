@@ -1,0 +1,394 @@
+"""Check QualityHandler.
+
+This script verifies quality handler behavior.
+
+It reads product facts from the local database, but does not call an LLM,
+promise durability, promise rust resistance, promise scratch resistance,
+promise warranty, promise returns/exchanges, promise compensation, judge
+quality responsibility, or write data.
+"""
+
+from __future__ import annotations
+
+import sys
+from dataclasses import dataclass
+from pathlib import Path
+from pprint import pprint
+from typing import Final
+
+BACKEND_ROOT: Final[Path] = Path(__file__).resolve().parents[1]
+
+if str(BACKEND_ROOT) not in sys.path:
+    sys.path.insert(0, str(BACKEND_ROOT))
+
+from app.agent.handlers import QualityHandler  # noqa: E402
+from app.agent.parsers import QualityParameterParser  # noqa: E402
+from app.core.database import get_session_factory  # noqa: E402
+from app.repositories import ProductRepository  # noqa: E402
+
+
+@dataclass(frozen=True)
+class QualityHandlerCheckCase:
+    """One quality handler check case."""
+
+    text: str
+    expected_parse_status: str
+    expected_handler_status: str
+    expected_handoff_required: bool
+    expected_matched_count: int | None = None
+    expected_query_type: str | None = None
+    expected_fact_key: str | None = None
+    expected_fact_value: object | None = None
+    expected_error_fragment: str | None = None
+
+
+def build_cases() -> list[QualityHandlerCheckCase]:
+    """Return deterministic handler check cases."""
+
+    return [
+        QualityHandlerCheckCase(
+            text="SKU001 什么材质",
+            expected_parse_status="parsed",
+            expected_handler_status="success",
+            expected_handoff_required=False,
+            expected_matched_count=1,
+            expected_query_type="material",
+            expected_fact_key="material_available",
+            expected_fact_value=True,
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 表面怎么处理",
+            expected_parse_status="parsed",
+            expected_handler_status="success",
+            expected_handoff_required=False,
+            expected_matched_count=1,
+            expected_query_type="surface_treatment",
+            expected_fact_key="surface_treatment_available",
+            expected_fact_value=True,
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 耐用吗",
+            expected_parse_status="parsed",
+            expected_handler_status="handoff",
+            expected_handoff_required=True,
+            expected_matched_count=1,
+            expected_query_type="durability",
+            expected_fact_key="durability_committed",
+            expected_fact_value=False,
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 会不会生锈",
+            expected_parse_status="parsed",
+            expected_handler_status="handoff",
+            expected_handoff_required=True,
+            expected_matched_count=1,
+            expected_query_type="rust_resistance",
+            expected_fact_key="rust_resistance_committed",
+            expected_fact_value=False,
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 会不会掉漆",
+            expected_parse_status="parsed",
+            expected_handler_status="handoff",
+            expected_handoff_required=True,
+            expected_matched_count=1,
+            expected_query_type="scratch_resistance",
+            expected_fact_key="scratch_resistance_committed",
+            expected_fact_value=False,
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 质保多久",
+            expected_parse_status="parsed",
+            expected_handler_status="handoff",
+            expected_handoff_required=True,
+            expected_matched_count=1,
+            expected_query_type="warranty",
+            expected_fact_key="warranty_committed",
+            expected_fact_value=False,
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 不合适能退吗",
+            expected_parse_status="parsed",
+            expected_handler_status="handoff",
+            expected_handoff_required=True,
+            expected_matched_count=1,
+            expected_query_type="return_exchange",
+            expected_fact_key="return_exchange_committed",
+            expected_fact_value=False,
+        ),
+        QualityHandlerCheckCase(
+            text="质量问题能赔吗",
+            expected_parse_status="missing_product_reference",
+            expected_handler_status="handoff",
+            expected_handoff_required=True,
+            expected_matched_count=0,
+            expected_query_type="compensation",
+            expected_fact_key="compensation_committed",
+            expected_fact_value=False,
+            expected_error_fragment="missing product reference",
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 收到有划痕",
+            expected_parse_status="parsed",
+            expected_handler_status="handoff",
+            expected_handoff_required=True,
+            expected_matched_count=1,
+            expected_query_type="defect_issue",
+            expected_fact_key="defect_judgement_made",
+            expected_fact_value=False,
+        ),
+        QualityHandlerCheckCase(
+            text="SKU999 什么材质",
+            expected_parse_status="parsed",
+            expected_handler_status="not_found",
+            expected_handoff_required=True,
+            expected_matched_count=0,
+            expected_query_type="material",
+            expected_error_fragment="product not found",
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 和 SKU003 哪个质量更好",
+            expected_parse_status="ambiguous",
+            expected_handler_status="invalid_request",
+            expected_handoff_required=False,
+            expected_matched_count=0,
+            expected_query_type="general_quality",
+            expected_error_fragment="multiple SKU IDs found in quality query",
+        ),
+        QualityHandlerCheckCase(
+            text="SKU001 几天发货",
+            expected_parse_status="not_quality_intent",
+            expected_handler_status="invalid_request",
+            expected_handoff_required=False,
+            expected_matched_count=0,
+        ),
+    ]
+
+
+def require_facts(value: dict[str, object] | None) -> dict[str, object]:
+    """Require non-empty facts dictionary."""
+
+    if value is None:
+        raise AssertionError("handler facts must not be None")
+
+    return value
+
+
+def require_products(facts: dict[str, object]) -> list[dict[str, object]]:
+    """Read products from facts."""
+
+    products = facts.get("products")
+
+    if not isinstance(products, list):
+        raise AssertionError("facts['products'] must be a list")
+
+    result: list[dict[str, object]] = []
+
+    for product in products:
+        if not isinstance(product, dict):
+            raise AssertionError("every product fact must be a dict")
+        result.append(product)
+
+    return result
+
+
+def assert_no_forbidden_commitment_facts(facts: dict[str, object]) -> bool:
+    """Check that handler facts contain no unsupported commitments."""
+
+    expected_false_keys = [
+        "quality_commitment_made",
+        "durability_committed",
+        "rust_resistance_committed",
+        "scratch_resistance_committed",
+        "fitment_committed",
+        "defect_judgement_made",
+        "warranty_committed",
+        "return_exchange_committed",
+        "compensation_committed",
+    ]
+
+    for key in expected_false_keys:
+        if facts.get(key) is not False:
+            print(f"failed: facts[{key!r}] must be False")
+            return False
+
+    forbidden_fact_keys = [
+        "warranty_period",
+        "return_policy",
+        "exchange_policy",
+        "compensation_amount",
+        "compensation_policy",
+        "durability_years",
+        "rust_resistance_level",
+        "scratch_resistance_level",
+        "quality_responsibility_judgement",
+    ]
+
+    for key in forbidden_fact_keys:
+        if key in facts:
+            print(f"failed: forbidden fact key exists: {key!r}")
+            return False
+
+    return True
+
+
+def assert_matched_product_basics(
+    *,
+    facts: dict[str, object],
+    expected_sku_id: str,
+) -> bool:
+    """Check matched product facts for known SKU."""
+
+    products = require_products(facts)
+
+    if not products:
+        print("failed: expected at least one matched product")
+        return False
+
+    first_product = products[0]
+
+    if first_product.get("sku_id") != expected_sku_id:
+        print(
+            "failed: expected first product sku_id "
+            f"{expected_sku_id!r}, got {first_product.get('sku_id')!r}"
+        )
+        return False
+
+    required_keys = [
+        "product_name",
+        "thread_spec",
+        "oem_reference_number",
+        "material",
+        "surface_treatment",
+    ]
+
+    for key in required_keys:
+        if key not in first_product:
+            print(f"failed: product fact missing key {key!r}")
+            return False
+
+    return True
+
+
+def run_case(
+    *,
+    parser: QualityParameterParser,
+    handler: QualityHandler,
+    case: QualityHandlerCheckCase,
+) -> bool:
+    """Run one handler check case."""
+
+    print("=" * 80)
+    print(f"text: {case.text}")
+
+    parsed_query = parser.parse(case.text)
+    handler_result = handler.handle(parsed_query)
+    facts = require_facts(handler_result.facts)
+
+    pprint(handler_result.to_dict())
+
+    checks: list[tuple[str, object | None, object | None]] = [
+        ("parse_status", case.expected_parse_status, parsed_query.status),
+        ("handler_status", case.expected_handler_status, handler_result.status),
+        (
+            "handoff_required",
+            case.expected_handoff_required,
+            handler_result.handoff_required,
+        ),
+        (
+            "quality_query_type",
+            case.expected_query_type,
+            facts.get("quality_query_type"),
+        ),
+    ]
+
+    for name, expected_value, actual_value in checks:
+        if expected_value != actual_value:
+            print(
+                f"failed: {name} expected {expected_value!r}, "
+                f"got {actual_value!r}"
+            )
+            return False
+
+    if (
+        case.expected_matched_count is not None
+        and handler_result.matched_count != case.expected_matched_count
+    ):
+        print(
+            "failed: matched_count expected "
+            f"{case.expected_matched_count}, got {handler_result.matched_count}"
+        )
+        return False
+
+    if (
+        case.expected_fact_key is not None
+        and facts.get(case.expected_fact_key) != case.expected_fact_value
+    ):
+        print(
+            "failed: fact "
+            f"{case.expected_fact_key!r} expected "
+            f"{case.expected_fact_value!r}, got "
+            f"{facts.get(case.expected_fact_key)!r}"
+        )
+        return False
+
+    if (
+        case.expected_error_fragment is not None
+        and case.expected_error_fragment not in "；".join(handler_result.errors)
+    ):
+        print(
+            "failed: expected errors to contain "
+            f"{case.expected_error_fragment!r}, got {handler_result.errors!r}"
+        )
+        return False
+
+    if not assert_no_forbidden_commitment_facts(facts):
+        return False
+
+    if handler_result.matched_count > 0 and not assert_matched_product_basics(
+        facts=facts,
+        expected_sku_id="SKU001",
+    ):
+        return False
+
+    return True
+
+
+def build_handler() -> QualityHandler:
+    """Build QualityHandler with database-backed repository."""
+
+    session_factory = get_session_factory()
+
+    with session_factory() as session:
+        product_repository = ProductRepository(session)
+        return QualityHandler(product_repository=product_repository)
+
+
+def main() -> int:
+    """Run quality handler checks."""
+
+    parser = QualityParameterParser()
+    handler = build_handler()
+    cases = build_cases()
+
+    results = [
+        run_case(
+            parser=parser,
+            handler=handler,
+            case=case,
+        )
+        for case in cases
+    ]
+
+    print("=" * 80)
+
+    if not all(results):
+        print("quality handler check failed")
+        return 1
+
+    print("quality handler check passed")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
