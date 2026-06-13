@@ -295,7 +295,7 @@ def detect_forbidden_commitments(
     ]
 
 
-def state_to_response_payload(
+def _state_to_response_payload_core(
     state: AgentState,
 ) -> dict[str, Any]:
     """Convert AgentState to a serializable API-like response payload."""
@@ -473,3 +473,67 @@ def _merge_text_lists(
             result.append(item)
 
     return result
+
+
+ANSWER_STRATEGY_RESPONSE_FIELDS: tuple[str, ...] = (
+    "answer_strategy_mode",
+    "answer_primary_module",
+    "answer_candidate_modules",
+    "answer_boundary_notes",
+    "answer_split_required",
+    "answer_handoff_required",
+    "answer_safety_blocked",
+    "answer_forbidden_commitment_detected",
+    "answer_forbidden_fragments",
+    "answer_boundary_note_type",
+    "answer_strategy_reason",
+)
+
+
+def state_to_response_payload(
+    state: AgentState,
+) -> dict[str, Any]:
+    """Convert state to response payload with answer strategy fields."""
+
+    payload = _state_to_response_payload_core(state)
+
+    return _expose_answer_strategy_payload_fields(
+        state=state,
+        payload=payload,
+    )
+
+
+def _expose_answer_strategy_payload_fields(
+    *,
+    state: AgentState,
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    """Expose answer strategy fields at top level and metadata."""
+
+    enriched_payload = dict(payload)
+    payload_metadata = enriched_payload.get("metadata")
+
+    if not isinstance(payload_metadata, dict):
+        payload_metadata = {}
+        enriched_payload["metadata"] = payload_metadata
+
+    state_metadata = state.get("metadata")
+    state_values: dict[str, Any] = dict(state)
+
+    if isinstance(state_metadata, dict):
+        for field in ANSWER_STRATEGY_RESPONSE_FIELDS:
+            if field in state_metadata and field not in payload_metadata:
+                payload_metadata[field] = state_metadata[field]
+
+    for field in ANSWER_STRATEGY_RESPONSE_FIELDS:
+        if field in enriched_payload:
+            continue
+
+        if field in payload_metadata:
+            enriched_payload[field] = payload_metadata[field]
+            continue
+
+        if field in state_values:
+            enriched_payload[field] = state_values[field]
+
+    return enriched_payload
