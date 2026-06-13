@@ -224,6 +224,11 @@ class AgentWorkflowNodes:
         if real_price_kb_used:
             return price_state
         new_state = price_state
+        new_state = _force_spec_route_for_spec_kb_question(new_state)
+        spec_state, real_spec_kb_used = _try_real_spec_kb_retrieval(dict(new_state))
+        if real_spec_kb_used:
+            return spec_state
+        new_state = spec_state
 
         metadata = _ensure_metadata(new_state)
 
@@ -1988,3 +1993,174 @@ def _price_kb_top_k_from_env() -> int:
 
     return top_k
 
+
+def _try_real_spec_kb_retrieval(
+    state: dict[str, Any],
+) -> tuple[AgentState, bool]:
+    """Try real Spec KB retrieval."""
+
+    import os
+
+    from app.agent.rag.spec_kb_retriever import SpecKBQdrantRetriever, SpecKBQdrantRetrieverConfig
+
+    new_state = cast(AgentState, dict(state))
+    metadata = _ensure_metadata(new_state)
+
+    enabled = _spec_kb_retriever_enabled_from_env()
+    metadata["real_spec_kb_retriever_enabled"] = enabled
+    metadata["real_spec_kb_retriever_used"] = False
+    metadata["real_spec_kb_retriever_error"] = None
+
+    selected_module = str(
+        new_state.get("selected_module")
+        or new_state.get("intent")
+        or ""
+    ).strip().lower()
+
+    candidate_modules_value = new_state.get("candidate_modules") or []
+    candidate_modules: list[str] = []
+
+    if isinstance(candidate_modules_value, list):
+        candidate_modules = [
+            str(item).strip().lower()
+            for item in candidate_modules_value
+            if str(item).strip()
+        ]
+
+    if selected_module != "spec" and "spec" not in candidate_modules:
+        return new_state, False
+
+    query = _state_current_query_for_spec_retrieval(new_state)
+
+    if not enabled or not query:
+        return new_state, False
+
+    try:
+        collection_name = os.getenv("QDRANT_COLLECTION_SPEC", "spec_kb_v1")
+        top_k = _spec_kb_top_k_from_env()
+        config = SpecKBQdrantRetrieverConfig.from_env()
+        config = SpecKBQdrantRetrieverConfig(
+            collection_name=collection_name,
+            qdrant_url=config.qdrant_url,
+            embedding_base_url=config.embedding_base_url,
+            embedding_timeout_seconds=config.embedding_timeout_seconds,
+            top_k=top_k,
+        )
+        retriever = SpecKBQdrantRetriever(config=config)
+        chunks = retriever.retrieve(query=query, top_k=top_k)
+
+        if not chunks:
+            metadata["real_spec_kb_retriever_error"] = "empty retrieval result"
+            return new_state, False
+
+        retrieved_chunks = [chunk.to_context() for chunk in chunks]
+        new_state["retrieved_chunks"] = retrieved_chunks
+        cast(dict[str, Any], new_state)["retrieval_context"] = retrieved_chunks
+        cast(dict[str, Any], new_state)["retrieval_source"] = "real_spec_kb"
+        cast(dict[str, Any], new_state)["retrieval_collection_name"] = collection_name
+        cast(dict[str, Any], new_state)["retrieval_selected_module"] = "spec"
+
+        metadata["real_spec_kb_retriever_used"] = True
+        metadata["real_spec_kb_retriever_hit_count"] = len(retrieved_chunks)
+        metadata["real_spec_kb_retriever_collection_name"] = collection_name
+        metadata["real_spec_kb_retriever_top_k"] = top_k
+        metadata["retrieval_source"] = "real_spec_kb"
+        metadata["retrieval_collection_name"] = collection_name
+        metadata["retrieval_selected_module"] = "spec"
+        metadata["retrieval_hit_count"] = len(retrieved_chunks)
+
+        cast(dict[str, Any], new_state)["retrieval_selected_module"] = "spec"
+        cast(dict[str, Any], new_state)["retrieval_hit_count"] = len(retrieved_chunks)
+
+        return new_state, True
+
+    except Exception as exc:
+        metadata["real_spec_kb_retriever_error"] = (
+            f"{type(exc).__name__}: {exc}"
+        )
+        return new_state, False
+
+
+def _state_current_query_for_spec_retrieval(
+    state: AgentState,
+) -> str:
+    """Return current query text for Spec KB retrieval."""
+
+    for key in ("user_text", "current_message", "user_message", "query"):
+        value = state.get(key)
+
+        if isinstance(value, str) and value.strip():
+            return value.strip()
+
+    return ""
+
+
+def _spec_kb_retriever_enabled_from_env() -> bool:
+    """Return whether real Spec KB retriever is enabled."""
+
+    import os
+
+    value = os.getenv("SPEC_KB_RETRIEVER_ENABLED", "1").strip().lower()
+
+    return value not in {"0", "false", "no", "off"}
+
+
+def _spec_kb_top_k_from_env() -> int:
+    """Return Spec KB top-k from env."""
+
+    import os
+
+    value = os.getenv("SPEC_KB_TOP_K", "5").strip()
+
+    if not value:
+        return 5
+
+    top_k = int(value)
+
+    if top_k <= 0:
+        return 5
+
+    return top_k
+
+
+def _force_spec_route_for_spec_kb_question(
+    state: AgentState,
+) -> AgentState:
+    """Force spec route for clear Spec KB questions."""
+
+    new_state = cast(AgentState, dict(state))
+    metadata = _ensure_metadata(new_state)
+    query = _state_current_query_for_spec_retrieval(new_state)
+    normalized_query = query.strip().lower()
+
+    if not normalized_query:
+        return new_state
+
+    spec_signals = (
+        "sku",
+        "oem",
+        "螺纹",
+        "规格",
+        "球径",
+        "杆长",
+        "锥度",
+        "材质",
+        "表面处理",
+        "适配",
+        "通用",
+        "m8",
+        "m10",
+        "m12",
+    )
+
+    if not any(signal in normalized_query for signal in spec_signals):
+        return new_state
+
+    new_state["selected_module"] = "spec"
+    new_state["intent"] = "spec"
+    new_state["candidate_modules"] = ["spec"]
+
+    metadata["spec_route_override_used"] = True
+    metadata["spec_route_override_reason"] = "spec_kb_signal"
+
+    return new_state

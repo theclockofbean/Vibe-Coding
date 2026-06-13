@@ -11,6 +11,12 @@ services:
       - "--model-id"
       - "BAAI/bge-m3"
       - "--auto-truncate"
+      - "--dtype"
+      - "float32"
+      - "--max-client-batch-size"
+      - "8"
+      - "--max-batch-tokens"
+      - "4096"
 
 volumes:
   ai_kb_bge_m3_cache:

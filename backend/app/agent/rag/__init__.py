@@ -39,6 +39,9 @@ from app.agent.rag.schemas import (
 )
 
 __all__ = [
+    "SpecKBRetrievalHit",
+    "SpecKBQdrantRetrieverConfig",
+    "SpecKBQdrantRetriever",
     "PriceKBQdrantRetriever",
     "PriceKBHit",
     "DEFAULT_COLLECTION_NAME",
@@ -85,3 +88,6 @@ from .real_embedding import (
     build_real_embedding_client_from_env as build_real_embedding_client_from_env,
 )
 from .real_embedding import real_embedding_enabled_from_env as real_embedding_enabled_from_env
+from .spec_kb_retriever import SpecKBQdrantRetriever as SpecKBQdrantRetriever
+from .spec_kb_retriever import SpecKBQdrantRetrieverConfig as SpecKBQdrantRetrieverConfig
+from .spec_kb_retriever import SpecKBRetrievalHit as SpecKBRetrievalHit
