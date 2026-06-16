@@ -15,6 +15,7 @@ DEFAULT_STRATEGY_JSON: Final[Path] = (
 
 DEFAULT_MODE: Final[str] = "single_primary"
 SAFETY_MODE: Final[str] = "safety_blocked"
+HANDOFF_MODE: Final[str] = "handoff_required"
 
 BOUNDARY_NOTES: Final[dict[str, str]] = {
     "none": "",
@@ -27,6 +28,10 @@ BOUNDARY_NOTES: Final[dict[str, str]] = {
     "quality_issue_not_compensation_commitment": "质量问题不等于自动赔付或补发，需要人工确认。",
     "spec_as_shipping_context": "SKU 或规格仅作为物流查询上下文，不代表适配承诺。",
     "shipping_fee_price_commitment_risk": "运费和价格相关内容需要人工确认。",
+    "risk_handoff_required": (
+        "该问题涉及适配、安装、报价、物流、质量、售后、投诉或定制等需要人工确认的信息，"
+        "请转人工确认后再处理。"
+    ),
 }
 
 
@@ -85,17 +90,10 @@ def decide_answer_strategy(
         query=query,
         config=config,
     )
-
-    if selected_module is None:
-        return build_decision(
-            mode="split_required",
-            selected_module=None,
-            candidate_modules=normalized_candidates,
-            boundary_note_type="none",
-            forbidden_fragments=forbidden_fragments,
-            config=config,
-            reason="no selected module; ask user to clarify or split question",
-        )
+    handoff_risk_fragments = detect_handoff_risk_fragments(
+        query=query,
+        config=config,
+    )
 
     if forbidden_fragments:
         return build_decision(
@@ -106,6 +104,42 @@ def decide_answer_strategy(
             forbidden_fragments=forbidden_fragments,
             config=config,
             reason="forbidden commitment fragment detected",
+        )
+
+    if handoff_risk_fragments and should_answer_spec_fact_with_risk_boundary(
+        selected_module=selected_module,
+        handoff_risk_fragments=handoff_risk_fragments,
+    ):
+        return build_decision(
+            mode="primary_with_boundary_note",
+            selected_module=selected_module,
+            candidate_modules=normalized_candidates,
+            boundary_note_type="risk_handoff_required",
+            forbidden_fragments=[],
+            config=config,
+            reason="spec fact answer with risk boundary",
+        )
+
+    if handoff_risk_fragments:
+        return build_decision(
+            mode=HANDOFF_MODE,
+            selected_module=selected_module,
+            candidate_modules=normalized_candidates,
+            boundary_note_type="risk_handoff_required",
+            forbidden_fragments=[],
+            config=config,
+            reason="risk handoff fragment detected",
+        )
+
+    if selected_module is None:
+        return build_decision(
+            mode="split_required",
+            selected_module=None,
+            candidate_modules=normalized_candidates,
+            boundary_note_type="none",
+            forbidden_fragments=forbidden_fragments,
+            config=config,
+            reason="no selected module; ask user to clarify or split question",
         )
 
     rule = find_pair_rule(
@@ -188,6 +222,65 @@ def detect_forbidden_fragments(
         for fragment in fragments
         if fragment.lower() in normalized_query
     ]
+
+
+def should_answer_spec_fact_with_risk_boundary(
+    *,
+    selected_module: str | None,
+    handoff_risk_fragments: list[str],
+) -> bool:
+    """Return whether spec facts may answer with a risk boundary note."""
+
+    if selected_module != "spec":
+        return False
+
+    if not handoff_risk_fragments:
+        return False
+
+    spec_fact_boundary_fragments = {
+        "安装",
+        "怎么安装",
+        "怎么装",
+        "适配",
+        "车型",
+        "宝马",
+        "USB接口",
+        "温控",
+    }
+
+    return set(handoff_risk_fragments) <= spec_fact_boundary_fragments
+
+
+def detect_handoff_risk_fragments(
+    *,
+    query: str,
+    config: dict[str, Any],
+) -> list[str]:
+    """Detect fragments that require handoff but not full safety blocking."""
+
+    fragments = [
+        str(item)
+        for item in cast(list[Any], config.get("handoff_risk_fragments", []))
+    ]
+    normalized_query = normalize_fragment_text(query)
+
+    matched: list[str] = []
+
+    for fragment in fragments:
+        normalized_fragment = normalize_fragment_text(fragment)
+
+        if normalized_fragment and normalized_fragment in normalized_query:
+            matched.append(fragment)
+
+    return matched
+
+
+def normalize_fragment_text(
+    value: str,
+) -> str:
+    """Normalize text for simple fragment matching."""
+
+    return value.strip().lower().replace(" ", "")
 
 
 def find_pair_rule(

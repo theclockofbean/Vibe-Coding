@@ -256,12 +256,170 @@ def parse_llm_intent_content(
     )
 
 
+def _classify_phase3ii_priority_intent(
+    text: str,
+) -> IntentClassificationResult | None:
+    """Return high-priority business intent for Phase 3-I-I routing.
+
+    These rules are deterministic overrides for short customer service queries
+    where SKU/material words can otherwise steal the route from price,
+    logistics, quality, or escalation.
+    """
+
+    def has_any(fragments: tuple[str, ...]) -> bool:
+        return any(fragment in text for fragment in fragments)
+
+    if has_any(
+        (
+            "投诉",
+            "差评",
+            "骗子",
+            "赔不赔",
+            "赔付",
+            "赔",
+            "定制",
+            "logo",
+            "安装损坏",
+            "装上去结果",
+            "球头裂",
+        )
+    ):
+        return IntentClassificationResult(
+            intent="escalation",
+            confidence=0.9,
+            reason="Phase 3-I-I 高优先级路由命中 escalation 线索。",
+            used_llm=False,
+            metadata={
+                "phase3ii_priority_router": True,
+                "matched_intent": "escalation",
+            },
+        )
+
+    if has_any(
+        (
+            "顺丰",
+            "新疆",
+            "澳门",
+            "港澳台",
+            "运费",
+            "差价",
+            "补多少钱",
+            "补多少",
+            "发顺丰",
+        )
+    ):
+        return IntentClassificationResult(
+            intent="logistics",
+            confidence=0.88,
+            reason="Phase 3-I-I 高优先级路由命中 logistics 线索。",
+            used_llm=False,
+            metadata={
+                "phase3ii_priority_router": True,
+                "matched_intent": "logistics",
+            },
+        )
+
+    if has_any(
+        (
+            "报个价",
+            "报价",
+            "批发价",
+            "批发",
+            "实在价",
+            "老客户",
+            "多少钱",
+            "价格",
+            "单价",
+            "折扣",
+            "采购价",
+            "成交价",
+        )
+    ):
+        return IntentClassificationResult(
+            intent="price",
+            confidence=0.88,
+            reason="Phase 3-I-I 高优先级路由命中 price 线索。",
+            used_llm=False,
+            metadata={
+                "phase3ii_priority_router": True,
+                "matched_intent": "price",
+            },
+        )
+
+    if has_any(
+        (
+            "原厂",
+            "oem正品",
+            "质检",
+            "质检报告",
+            "认证",
+            "认证资料",
+            "检测字段",
+            "检测依据",
+            "哪个更好",
+            "有什么区别",
+            "区别",
+            "会不会",
+            "掉色",
+            "发霉",
+            "褪色",
+            "夜光",
+            "蓄光",
+            "生锈",
+        )
+    ):
+        return IntentClassificationResult(
+            intent="quality",
+            confidence=0.86,
+            reason="Phase 3-I-I 高优先级路由命中 quality 线索。",
+            used_llm=False,
+            metadata={
+                "phase3ii_priority_router": True,
+                "matched_intent": "quality",
+            },
+        )
+
+    if has_any(
+        (
+            "全部参数",
+            "有哪些款",
+            "哪些款",
+            "哪款",
+            "最长",
+            "最长的杆",
+            "杆是多少",
+            "螺纹",
+            "杆长",
+            "球径",
+            "锥度",
+            "规格",
+            "尺寸",
+        )
+    ):
+        return IntentClassificationResult(
+            intent="spec",
+            confidence=0.86,
+            reason="Phase 3-I-I 高优先级路由命中 spec 线索。",
+            used_llm=False,
+            metadata={
+                "phase3ii_priority_router": True,
+                "matched_intent": "spec",
+            },
+        )
+
+    return None
+
+
 def classify_intent_by_keywords(
     user_text: str,
 ) -> IntentClassificationResult:
     """Local safe keyword fallback classifier."""
 
     text = user_text.strip().lower()
+
+    priority_result = _classify_phase3ii_priority_intent(text)
+    if priority_result is not None:
+        return priority_result
 
     keyword_rules: tuple[tuple[str, tuple[str, ...], float], ...] = (
         (
@@ -377,6 +535,31 @@ def _resolve_llm_intent_with_local_cues(
     """
 
     local = classify_intent_by_keywords(user_text)
+
+    if (
+        local.metadata.get("phase3ii_priority_router") is True
+        and local.intent != parsed.intent
+    ):
+        return IntentClassificationResult(
+            intent=local.intent,
+            confidence=max(local.confidence, min(parsed.confidence, 0.88)),
+            reason=(
+                "Phase 3-I-I 本地高优先级业务线索覆盖 LLM 意图。"
+                f"原始 LLM 意图：{parsed.intent}；原始原因：{parsed.reason}"
+            ),
+            used_llm=True,
+            is_valid=True,
+            fallback_reason=None,
+            raw_content=parsed.raw_content,
+            metadata={
+                "resolver": "phase3ii_priority_local_cue_resolution",
+                "original_llm_intent": parsed.intent,
+                "original_llm_confidence": parsed.confidence,
+                "local_intent": local.intent,
+                "local_confidence": local.confidence,
+                "local_reason": local.reason,
+            },
+        )
 
     if (
         parsed.intent == "spec"

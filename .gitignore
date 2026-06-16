@@ -113,3 +113,37 @@ Desktop.ini
 *.swp
 *.swo
 *~
+
+# --- local secrets and runtime artifacts ---
+.env
+.env.*
+!.env.example
+
+# logs / reports / runtime outputs
+logs/
+backups/
+.cache/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+
+# Node / frontend
+node_modules/
+dist/
+build/
+.env.local
+.env.development.local
+.env.production.local
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -20,8 +20,14 @@ SpecQueryType = Literal[
     "sku_ids",
     "thread_spec",
     "thread_dimensions",
+    "thread_diameter",
+    "material_keyword",
+    "max_rod_length",
+    "max_ball_diameter",
     "oem_reference_number",
+    "product_name_keyword",
 ]
+
 
 SpecHandlerStatus: TypeAlias = HandlerStatus
 SpecHandlerResult: TypeAlias = HandlerResult
@@ -115,6 +121,41 @@ class SpecHandler:
             return self._spec_query_service.query_by_thread_dimensions(
                 diameter_mm=diameter_mm,
                 pitch_mm=pitch_mm,
+                limit=handler_input.limit,
+            )
+
+        if handler_input.query_type == "thread_diameter":
+            diameter_mm = self._parse_decimal(
+                handler_input.diameter_mm,
+                field_name="diameter_mm",
+            )
+
+            return self._spec_query_service.query_by_thread_diameter(
+                diameter_mm=diameter_mm,
+                limit=max(handler_input.limit, 50),
+            )
+
+        if handler_input.query_type == "material_keyword":
+            query_value = self._require_query_value(handler_input)
+            return self._spec_query_service.query_by_material_keyword(
+                query_value,
+                limit=max(handler_input.limit, 50),
+            )
+
+        if handler_input.query_type == "product_name_keyword":
+            query_value = self._require_query_value(handler_input)
+            return self._spec_query_service.query_by_product_name_keyword(
+                query_value,
+                limit=max(handler_input.limit, 50),
+            )
+
+        if handler_input.query_type == "max_rod_length":
+            return self._spec_query_service.query_by_max_rod_length(
+                limit=handler_input.limit,
+            )
+
+        if handler_input.query_type == "max_ball_diameter":
+            return self._spec_query_service.query_by_max_ball_diameter(
                 limit=handler_input.limit,
             )
 

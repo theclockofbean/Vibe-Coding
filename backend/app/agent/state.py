@@ -537,3 +537,31 @@ def _expose_answer_strategy_payload_fields(
             enriched_payload[field] = state_values[field]
 
     return enriched_payload
+
+def _response_selected_module(state: AgentState) -> str | None:
+    """Return selected module normalized from final answer strategy metadata."""
+
+    selected_module = state.get("selected_module")
+    metadata = state.get("metadata")
+
+    if not isinstance(metadata, dict):
+        return selected_module
+
+    answer_primary_module = metadata.get("answer_primary_module")
+    answer_candidate_modules = metadata.get("answer_candidate_modules")
+
+    supported_modules = {"spec", "price", "logistics", "quality"}
+
+    if answer_primary_module not in supported_modules:
+        return selected_module
+
+    if isinstance(answer_candidate_modules, list):
+        clean_candidates = [
+            item for item in answer_candidate_modules if isinstance(item, str)
+        ]
+
+        if clean_candidates == [answer_primary_module]:
+            return answer_primary_module
+
+    return selected_module
+

@@ -138,6 +138,138 @@ class ProductRepository:
 
         return self._session.execute(statement).scalar_one_or_none()
 
+
+    def list_by_thread_diameter(
+        self,
+        diameter_mm: Decimal,
+        *,
+        limit: int = 50,
+        active_only: bool = True,
+    ) -> list[Product]:
+        """Return products matching metric thread diameter."""
+
+        if limit <= 0:
+            raise ValueError("limit must be positive")
+
+        statement = select(Product).where(
+            Product.thread_type == "M",
+            Product.thread_diameter_mm == diameter_mm,
+        )
+
+        if active_only:
+            statement = statement.where(Product.is_active.is_(True))
+
+        statement = statement.order_by(Product.sku_id).limit(limit)
+
+        return list(self._session.scalars(statement).all())
+
+    def list_by_material_keyword(
+        self,
+        material_keyword: str,
+        *,
+        limit: int = 50,
+        active_only: bool = True,
+    ) -> list[Product]:
+        """Return products whose material contains the keyword."""
+
+        keyword = material_keyword.strip()
+
+        if not keyword:
+            return []
+
+        if limit <= 0:
+            raise ValueError("limit must be positive")
+
+        statement = select(Product).where(Product.material.contains(keyword))
+
+        if active_only:
+            statement = statement.where(Product.is_active.is_(True))
+
+        statement = statement.order_by(Product.sku_id).limit(limit)
+
+        return list(self._session.scalars(statement).all())
+
+    def list_by_product_name_keyword(
+        self,
+        product_name_keyword: str,
+        *,
+        limit: int = 50,
+        active_only: bool = True,
+    ) -> list[Product]:
+        """Return products whose product name matches the keyword family."""
+
+        from sqlalchemy import or_
+
+        keyword = product_name_keyword.strip()
+
+        if not keyword:
+            return []
+
+        if limit <= 0:
+            raise ValueError("limit must be positive")
+
+        keywords = [keyword]
+
+        if keyword == "夜光":
+            keywords = ["夜光", "发光", "荧光"]
+
+        statement = select(Product).where(
+            or_(*(Product.product_name.contains(item) for item in keywords)),
+        )
+
+        if active_only:
+            statement = statement.where(Product.is_active.is_(True))
+
+        statement = statement.order_by(Product.sku_id).limit(limit)
+
+        return list(self._session.scalars(statement).all())
+
+    def list_by_max_rod_length(
+        self,
+        *,
+        limit: int = 10,
+        active_only: bool = True,
+    ) -> list[Product]:
+        """Return products with the maximum rod length."""
+
+        if limit <= 0:
+            raise ValueError("limit must be positive")
+
+        statement = select(Product)
+
+        if active_only:
+            statement = statement.where(Product.is_active.is_(True))
+
+        statement = statement.order_by(
+            Product.rod_length_mm.desc(),
+            Product.sku_id,
+        ).limit(limit)
+
+        return list(self._session.scalars(statement).all())
+
+    def list_by_max_ball_diameter(
+        self,
+        *,
+        limit: int = 10,
+        active_only: bool = True,
+    ) -> list[Product]:
+        """Return products with the maximum ball diameter."""
+
+        if limit <= 0:
+            raise ValueError("limit must be positive")
+
+        statement = select(Product)
+
+        if active_only:
+            statement = statement.where(Product.is_active.is_(True))
+
+        statement = statement.order_by(
+            Product.ball_diameter_mm.desc(),
+            Product.sku_id,
+        ).limit(limit)
+
+        return list(self._session.scalars(statement).all())
+
     def list_active_products(
         self,
         *,

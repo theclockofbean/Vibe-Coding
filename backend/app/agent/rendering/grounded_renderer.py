@@ -3,9 +3,13 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Any
+from typing import Any, Final
 
 from app.agent.llm.safety import LLMSafetyGuard
+from app.agent.llm.schemas import (
+    DEFAULT_FORBIDDEN_COMMITMENTS,
+    detect_forbidden_commitments,
+)
 from app.agent.rendering.schemas import (
     DEFAULT_RENDER_BUSINESS_RULES,
     SAFE_FALLBACK_RESPONSE,
@@ -13,6 +17,12 @@ from app.agent.rendering.schemas import (
     GroundedRenderInput,
     GroundedRenderOutput,
     make_response_source,
+)
+
+
+LLM_REWRITE_FORBIDDEN_COMMITMENTS: Final[tuple[str, ...]] = (
+    *DEFAULT_FORBIDDEN_COMMITMENTS,
+    "一定耐腐蚀",
 )
 
 
@@ -167,6 +177,36 @@ def render_grounded_response(
     return GroundedRenderer().render(render_input)
 
 
+def _should_skip_supplemental_rag_for_exact_sku(
+    render_input: GroundedRenderInput,
+) -> bool:
+    """Return whether exact SKU facts should suppress supplemental RAG chunks."""
+
+    answer_text = _optional_text(render_input.answer_text) or ""
+
+    return (
+        render_input.selected_module == "spec"
+        and "查到 SKU" in answer_text
+    )
+
+
+def _is_spec_qa_supplemental_source(
+    value: dict[str, Any],
+) -> bool:
+    """Return whether source/chunk is a spec QA supplemental item."""
+
+    identifiers = [
+        _optional_text(value.get("reference_id")),
+        _optional_text(value.get("chunk_id")),
+        _optional_text(value.get("doc_id")),
+    ]
+
+    return any(
+        identifier is not None and identifier.startswith("spec_qa_")
+        for identifier in identifiers
+    )
+
+
 def _build_evidence_lines(
     *,
     render_input: GroundedRenderInput,
@@ -175,9 +215,13 @@ def _build_evidence_lines(
     """Build supplementary evidence lines from safe RAG chunks."""
 
     lines: list[str] = []
+    skip_spec_qa = _should_skip_supplemental_rag_for_exact_sku(render_input)
 
     for chunk in render_input.retrieved_chunks:
         if chunk.get("allow_answer_reference") is False:
+            continue
+
+        if skip_spec_qa and _is_spec_qa_supplemental_source(chunk):
             continue
 
         summary = _optional_text(chunk.get("summary"))
@@ -251,13 +295,29 @@ def _build_llm_expression_line(
     if metadata.get("commitment_source_allowed") is True:
         return None
 
+    rewrite_text = _trim_text(llm_output, max_length=80)
+
+    if _has_forbidden_llm_rewrite_fragment(rewrite_text):
+        return None
+
     if render_input.selected_module in {"price", "logistics", "quality"}:
-        return "处理建议：" + _trim_text(llm_output, max_length=80)
+        return "处理建议：" + rewrite_text
 
     if render_input.handoff_required:
-        return "处理建议：" + _trim_text(llm_output, max_length=80)
+        return "处理建议：" + rewrite_text
 
     return None
+
+
+def _has_forbidden_llm_rewrite_fragment(text: str) -> bool:
+    """Return whether LLM rewrite text contains forbidden fragments."""
+
+    return bool(
+        detect_forbidden_commitments(
+            text,
+            LLM_REWRITE_FORBIDDEN_COMMITMENTS,
+        )
+    )
 
 
 def _build_response_sources(
@@ -266,14 +326,21 @@ def _build_response_sources(
     """Build normalized response sources."""
 
     sources: list[dict[str, Any]] = []
+    skip_spec_qa = _should_skip_supplemental_rag_for_exact_sku(render_input)
 
     for reference in render_input.source_references:
+        if skip_spec_qa and _is_spec_qa_supplemental_source(reference):
+            continue
+
         source = _source_from_reference(reference)
 
         if source is not None:
             sources.append(source)
 
     for chunk in render_input.retrieved_chunks:
+        if skip_spec_qa and _is_spec_qa_supplemental_source(chunk):
+            continue
+
         chunk_source = _source_from_chunk(chunk)
 
         if chunk_source is not None:

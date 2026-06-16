@@ -11,9 +11,25 @@ from __future__ import annotations
 import re
 from dataclasses import asdict, dataclass, field
 from decimal import Decimal, InvalidOperation
-from typing import Final, Literal, TypeAlias
+from typing import TYPE_CHECKING, Final, Literal, TypeAlias
 
-from app.agent.handlers.spec_handler import SpecHandlerInput, SpecQueryType
+if TYPE_CHECKING:
+    from app.agent.handlers.spec_handler import SpecHandlerInput
+
+
+SpecQueryType = Literal[
+    "sku_id",
+    "sku_ids",
+    "thread_spec",
+    "thread_dimensions",
+    "thread_diameter",
+    "material_keyword",
+    "max_rod_length",
+    "max_ball_diameter",
+    "oem_reference_number",
+    "product_name_keyword",
+]
+
 
 ParseStatus: TypeAlias = Literal[
     "parsed",
@@ -22,7 +38,7 @@ ParseStatus: TypeAlias = Literal[
 ]
 
 SKU_PATTERN: Final[re.Pattern[str]] = re.compile(
-    r"\bSKU[-_\s]?(?P<number>\d{1,3})\b",
+    r"(?<![A-Za-z0-9])SKU[-_\s]?(?P<number>\d{1,3})(?![A-Za-z0-9])",
     re.IGNORECASE,
 )
 
@@ -59,6 +75,8 @@ class ParsedSpecQuery:
 
     def to_handler_input(self) -> SpecHandlerInput:
         """Convert parsed query into SpecHandlerInput."""
+
+        from app.agent.handlers.spec_handler import SpecHandlerInput
 
         if self.status != "parsed" or self.query_type is None:
             raise ValueError("only parsed query can be converted to handler input")
@@ -99,6 +117,9 @@ class SpecParameterParser:
         sku_ids = self.extract_sku_ids(normalized_text)
         oem_numbers = self.extract_oem_reference_numbers(normalized_text)
         thread_specs = self.extract_thread_specs(normalized_text)
+        thread_diameter = self.extract_thread_diameter(normalized_text)
+        material_keyword = self.extract_material_keyword(normalized_text)
+        product_name_keyword = self.extract_product_name_keyword(normalized_text)
 
         warnings = self._build_priority_warnings(
             sku_ids=sku_ids,
@@ -160,11 +181,59 @@ class SpecParameterParser:
                 errors=["multiple thread specs found"],
             )
 
+        if self.is_max_rod_length_query(normalized_text):
+            return ParsedSpecQuery(
+                status="parsed",
+                raw_text=raw_text,
+                query_type="max_rod_length",
+                limit=limit,
+                warnings=warnings,
+            )
+
+        if self.is_max_ball_diameter_query(normalized_text):
+            return ParsedSpecQuery(
+                status="parsed",
+                raw_text=raw_text,
+                query_type="max_ball_diameter",
+                limit=limit,
+                warnings=warnings,
+            )
+
+        if thread_diameter is not None:
+            return ParsedSpecQuery(
+                status="parsed",
+                raw_text=raw_text,
+                query_type="thread_diameter",
+                diameter_mm=thread_diameter,
+                limit=limit,
+                warnings=warnings,
+            )
+
+        if material_keyword is not None:
+            return ParsedSpecQuery(
+                status="parsed",
+                raw_text=raw_text,
+                query_type="material_keyword",
+                query_value=material_keyword,
+                limit=limit,
+                warnings=warnings,
+            )
+
+        if product_name_keyword is not None:
+            return ParsedSpecQuery(
+                status="parsed",
+                raw_text=raw_text,
+                query_type="product_name_keyword",
+                query_value=product_name_keyword,
+                limit=limit,
+                warnings=warnings,
+            )
+
         return ParsedSpecQuery(
             status="not_supported",
             raw_text=raw_text,
             errors=[
-                "no SKU ID, OEM reference number, or thread spec was found"
+                "no SKU ID, OEM reference number, thread spec, material, or range query was found"
             ],
         )
 
@@ -235,6 +304,79 @@ class SpecParameterParser:
             normalized = normalized.rstrip("0").rstrip(".")
 
         return normalized
+
+
+    @classmethod
+    def extract_thread_diameter(
+        cls,
+        text: str,
+    ) -> str | None:
+        """Extract metric thread diameter without requiring pitch."""
+
+        for match in re.finditer(
+            r"(?<![A-Za-z0-9])M(?P<diameter>\d+(?:\.\d+)?)(?!\s*[×xX*＊]\s*\d)(?![A-Za-z0-9])",
+            text,
+            re.IGNORECASE,
+        ):
+            diameter = cls._normalize_decimal_text(match.group("diameter"))
+
+            if diameter is not None:
+                return diameter
+
+        return None
+
+    @staticmethod
+    def extract_material_keyword(
+        text: str,
+    ) -> str | None:
+        """Extract supported material keyword."""
+
+        for keyword in ("钛合金", "碳纤维", "不锈钢", "铝合金", "黄铜", "真皮"):
+            if keyword in text:
+                return keyword
+
+        return None
+
+    @staticmethod
+    def extract_product_name_keyword(
+        text: str,
+    ) -> str | None:
+        """Extract supported product name or series keyword."""
+
+        for keyword in ("夜光",):
+            if keyword in text and (
+                "系列" in text
+                or "螺纹" in text
+                or "规格" in text
+                or "球头" in text
+            ):
+                return keyword
+
+        return None
+
+    @staticmethod
+    def is_max_rod_length_query(
+        text: str,
+    ) -> bool:
+        """Return whether query asks for longest rod length."""
+
+        return (
+            ("最长" in text and "杆" in text)
+            or "杆长最大" in text
+            or "最大杆长" in text
+        )
+
+    @staticmethod
+    def is_max_ball_diameter_query(
+        text: str,
+    ) -> bool:
+        """Return whether query asks for maximum ball diameter."""
+
+        return (
+            ("最大" in text and "球径" in text)
+            or "球径最大" in text
+            or ("最大" in text and "球头" in text)
+        )
 
     @staticmethod
     def _build_priority_warnings(

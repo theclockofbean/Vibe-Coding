@@ -49,7 +49,12 @@ class SpecAnswerRenderer:
                 source_references=handler_result.source_references,
             )
 
-        if len(products) == 1:
+        query_type = str(facts.get("query_type") or "")
+
+        if query_type == "product_name_keyword":
+            query_value = str(facts.get("query_value") or "")
+            text = self._render_product_name_keyword(products, query_value)
+        elif len(products) == 1:
             text = self._render_single_product(products[0])
         else:
             text = self._render_multiple_products(products)
@@ -123,6 +128,48 @@ class SpecAnswerRenderer:
             f"备货状态为{product['stock_status']}，"
             f"发货周期约 {product['lead_time_days']} 天。"
         )
+
+    @staticmethod
+    def _render_product_name_keyword(
+        products: list[dict[str, Any]],
+        keyword: str,
+    ) -> str:
+        """Render product-name keyword spec comparison."""
+
+        lines = [
+            f"按产品名称关键词“{keyword}”查到 {len(products)} 个具体SKU：",
+        ]
+
+        thread_specs = sorted(
+            {
+                str(product["thread_spec"])
+                for product in products
+            }
+        )
+
+        for product in products:
+            lines.append(
+                "- "
+                f"{product['sku_id']}｜{product['product_name']}｜"
+                f"螺纹规格 {product['thread_spec']}｜"
+                f"杆长 {product['rod_length_mm']} mm｜"
+                f"球径 {product['ball_diameter_mm']} mm"
+            )
+
+        if len(thread_specs) > 1:
+            lines.append(
+                "这些具体SKU的螺纹规格不完全一样，包含："
+                + "、".join(thread_specs)
+                + "。建议按具体SKU查询后再确认。"
+            )
+        else:
+            lines.append(
+                "这些具体SKU当前查到的螺纹规格一致，为 "
+                + "、".join(thread_specs)
+                + "。建议下单前仍按具体SKU查询确认。"
+            )
+
+        return "\n".join(lines)
 
     @staticmethod
     def _render_multiple_products(products: list[dict[str, Any]]) -> str:

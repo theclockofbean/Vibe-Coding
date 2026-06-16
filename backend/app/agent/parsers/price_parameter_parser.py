@@ -38,7 +38,7 @@ ProductReferenceType: TypeAlias = Literal[
 
 
 SKU_PATTERN: Final[re.Pattern[str]] = re.compile(
-    r"\bSKU[-_\s]?(?P<number>\d{1,3})\b",
+    r"(?<![A-Za-z0-9])SKU[-_\s]?(?P<number>\d{1,3})(?![A-Za-z0-9])",
     re.IGNORECASE,
 )
 

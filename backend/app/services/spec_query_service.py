@@ -153,6 +153,96 @@ class SpecQueryService:
             products=products,
         )
 
+
+    def query_by_thread_diameter(
+        self,
+        *,
+        diameter_mm: Decimal,
+        limit: int = 50,
+    ) -> SpecQueryResult:
+        """Query product facts by metric thread diameter only."""
+
+        products = self._product_repository.list_by_thread_diameter(
+            diameter_mm=diameter_mm,
+            limit=limit,
+        )
+
+        return self._build_result(
+            query_type="thread_diameter",
+            query_value=f"M{self._normalize_decimal_text(str(diameter_mm))}",
+            products=products,
+        )
+
+    def query_by_material_keyword(
+        self,
+        material_keyword: str,
+        *,
+        limit: int = 50,
+    ) -> SpecQueryResult:
+        """Query product facts by material keyword."""
+
+        normalized_keyword = material_keyword.strip()
+        products = self._product_repository.list_by_material_keyword(
+            normalized_keyword,
+            limit=limit,
+        )
+
+        return self._build_result(
+            query_type="material_keyword",
+            query_value=normalized_keyword,
+            products=products,
+        )
+
+    def query_by_product_name_keyword(
+        self,
+        product_name_keyword: str,
+        *,
+        limit: int = 50,
+    ) -> SpecQueryResult:
+        """Query product facts by product name keyword."""
+
+        normalized_keyword = product_name_keyword.strip()
+        products = self._product_repository.list_by_product_name_keyword(
+            normalized_keyword,
+            limit=limit,
+        )
+
+        return self._build_result(
+            query_type="product_name_keyword",
+            query_value=normalized_keyword,
+            products=products,
+        )
+
+    def query_by_max_rod_length(
+        self,
+        *,
+        limit: int = 10,
+    ) -> SpecQueryResult:
+        """Query products ordered by maximum rod length."""
+
+        products = self._product_repository.list_by_max_rod_length(limit=limit)
+
+        return self._build_result(
+            query_type="max_rod_length",
+            query_value="max_rod_length",
+            products=products,
+        )
+
+    def query_by_max_ball_diameter(
+        self,
+        *,
+        limit: int = 10,
+    ) -> SpecQueryResult:
+        """Query products ordered by maximum ball diameter."""
+
+        products = self._product_repository.list_by_max_ball_diameter(limit=limit)
+
+        return self._build_result(
+            query_type="max_ball_diameter",
+            query_value="max_ball_diameter",
+            products=products,
+        )
+
     def query_by_oem_reference(
         self,
         oem_reference_number: str,

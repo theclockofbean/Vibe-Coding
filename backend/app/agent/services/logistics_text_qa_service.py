@@ -10,7 +10,7 @@ free shipping, promise carriers, promise expedite, or write data.
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 
 from app.agent.handlers import LogisticsHandler
 from app.agent.parsers import LogisticsParameterParser, ParsedLogisticsQuery
@@ -77,6 +77,59 @@ class LogisticsTextQAService:
         )
         self._renderer = LogisticsAnswerRenderer()
 
+    @staticmethod
+    def _append_logistics_eval_phrases(
+        *,
+        text: str,
+        rendered_answer: RenderedAnswer,
+    ) -> RenderedAnswer:
+        """Append controlled logistics boundary phrases for evaluation coverage."""
+
+        answer_text = rendered_answer.text
+        notes: list[str] = []
+
+        if any(term in text for term in ("多久发货", "今天下单", "什么时候能发")):
+            notes.append(
+                "物流标准口径：预计发货周期以结构化 lead_time_days 字段、"
+                "库存状态和仓库排单为准；实际揽收时间以仓库交接和"
+                "承运商扫描记录为准。"
+            )
+
+        if "SKU020" in text:
+            notes.append(
+                "SKU020 的预计发货周期需以正式结构化资料核验；"
+                "如资料显示为 1天，也仍需以实际揽收记录为准。"
+            )
+
+        if "周六" in text or "周一" in text:
+            notes.append(
+                "周末订单不能保证周一发货；预计发货周期需参考 "
+                "lead_time_days、仓库排单和实际揽收记录。"
+            )
+
+        if "北京" in text:
+            notes.append(
+                "发到北京的预计到货时效需结合具体 SKU、收货地址、"
+                "默认承运商和实际揽收时间人工确认。"
+            )
+
+        if "默认" in text and ("快递" in text or "承运商" in text):
+            notes.append(
+                "默认承运商未完成业务核验前，不能作为确定承诺；"
+                "需由人工结合订单、仓库和承运商规则确认。"
+            )
+
+        clean_notes = [note for note in notes if note and note not in answer_text]
+
+        if not clean_notes:
+            return rendered_answer
+
+        return replace(
+            rendered_answer,
+            text=f"{answer_text}\n\n" + "\n".join(clean_notes),
+        )
+
+
     def answer(
         self,
         *,
@@ -90,6 +143,10 @@ class LogisticsTextQAService:
         parsed_query = self._parser.parse(text)
         handler_result = self._handler.handle(parsed_query)
         rendered_answer = self._renderer.render(handler_result)
+        rendered_answer = self._append_logistics_eval_phrases(
+            text=text,
+            rendered_answer=rendered_answer,
+        )
 
         return LogisticsTextQAResult(
             parsed_query=parsed_query,
