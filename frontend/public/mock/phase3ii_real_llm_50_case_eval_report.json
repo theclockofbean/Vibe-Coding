@@ -1,0 +1,2345 @@
+{
+  "summary": {
+    "total_cases": 50,
+    "blocker_count": 0,
+    "major_count": 81,
+    "workflow_error_count": 0,
+    "module_accuracy": 0.92,
+    "risk_gate_pass_rate": 1.0,
+    "final_response_non_empty_rate": 1.0,
+    "forbidden_commitment_leak_count": 0,
+    "price_violation_count": 0,
+    "price_compliance_rate": 1.0,
+    "failed_case_count": 31,
+    "failed_cases": [
+      {
+        "case_id": "TC_SPEC_014",
+        "category": "spec",
+        "scenario_type": "boundary",
+        "expected_module": "spec",
+        "selected_module": "quality",
+        "answer_strategy_mode": "single_primary",
+        "answer_boundary_note_type": "none",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: selected_module expected spec, got quality; effective=quality",
+          "MAJOR: missing must_contain_all fragment: M12×1.25"
+        ],
+        "final_response_preview": "按产品名称关键词“夜光”查到 7 个具体SKU：\n- SKU005｜夜光树脂换挡球头｜螺纹规格 M8×1.25｜杆长 38.00 mm｜球径 50.00 mm\n- SKU012｜夜光铝合金球头｜螺纹规格 M8×1.25｜杆长 40.00 mm｜球径 50.00 mm\n- SKU023｜夜光硅胶软球头｜螺纹规格 M10×1.5｜杆长 40.00 mm｜球径 55.00 mm\n- SKU037｜夜光碳纤维球头｜螺纹规格 M10×1.5｜杆长 42.00 mm｜球径 48.00 mm\n- SKU055｜碳纤维+夜光LOGO球头｜螺纹规格 M10×1.5｜杆长 42.00 mm｜球径 50.00 mm"
+      },
+      {
+        "case_id": "TC_LOGI_001",
+        "category": "logistics",
+        "scenario_type": "core",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "primary_with_boundary_note",
+        "answer_boundary_note_type": "spec_as_shipping_context",
+        "risk_boundary_handled": true,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 预计",
+          "MAJOR: missing must_contain_all fragment: 实际揽收"
+        ],
+        "final_response_preview": "查到 SKU001：铝合金竞技换挡球头。当前备货状态为现货，发货周期约 2 天。该时间仅表示发货周期，不代表到货时间。\n\n补充说明：物流问题需结合结构化规则和人工确认。；售后承诺类问题应人工确认或依据正式规则。。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：根据当前系统查询，SKU001（铝合金竞技换挡球头）的备货状态为现货，发货周期约2天。请注意，此时间为发货周期，不代表到货时间，具体发货以实际订单处理为准。如…\n\n参考来源：SKU001；seed_logistics_boundary；seed_aftersale_boundary；seed_ge"
+      },
+      {
+        "case_id": "TC_LOGI_002",
+        "category": "logistics",
+        "scenario_type": "core",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 物流附加费",
+          "MAJOR: missing must_contain_all fragment: 未完成业务核验",
+          "MAJOR: missing must_contain_all fragment: 不能输出补差金额"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_LOGI_003",
+        "category": "logistics",
+        "scenario_type": "boundary",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 新疆",
+          "MAJOR: missing must_contain_all fragment: 物流附加费",
+          "MAJOR: missing must_contain_all fragment: 不能给出金额"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_LOGI_004",
+        "category": "logistics",
+        "scenario_type": "core",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "primary_with_boundary_note",
+        "answer_boundary_note_type": "spec_as_shipping_context",
+        "risk_boundary_handled": true,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 发货周期",
+          "MAJOR: missing must_contain_all fragment: 1天",
+          "MAJOR: missing must_contain_all fragment: 预计",
+          "MAJOR: missing must_contain_all fragment: 实际揽收"
+        ],
+        "final_response_preview": "当前未识别到可处理的业务问题，请补充 SKU 和具体问题，例如规格、价格、发货或质量。\n\n补充说明：LOGI0042｜物流问答｜shipping_fee｜SKU042发宁夏 运费多少。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：当前无法确认 SKU020 的发货时间，因为缺少该商品的库存、发货规则等可依据信息。请提供完整 SKU 和具体问题，或联系人工客服核实。\n\n参考来源：logistics_qa_logi0042；render_business_rules；llm_safe_rewrite。\n\n补充边界：SKU 或规格仅作为物流查询上下文，不代"
+      },
+      {
+        "case_id": "TC_LOGI_005",
+        "category": "logistics",
+        "scenario_type": "risk",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 售后",
+          "MAJOR: missing must_contain_all fragment: 运费承担",
+          "MAJOR: missing must_contain_all fragment: 未完成业务核验"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_LOGI_006",
+        "category": "logistics",
+        "scenario_type": "core",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "single_primary",
+        "answer_boundary_note_type": "none",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 预计",
+          "MAJOR: missing must_contain_all fragment: lead_time_days",
+          "MAJOR: missing must_contain_all fragment: 实际揽收",
+          "MAJOR: missing any of must_contain_any: ['预计', '实际揽收', '不能保证周一发货']"
+        ],
+        "final_response_preview": "当前未识别为物流问题，未进入物流处理。\n\n补充说明：LOGI0042｜物流问答｜shipping_fee｜SKU042发宁夏 运费多少。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：根据现有信息，您的问题未被系统识别为物流查询，无法确认发货时间。建议您联系人工客服核实订单发货安排。\n\n参考来源：logistics_qa_logi0042；render_business_rules；llm_safe_rewrite。"
+      },
+      {
+        "case_id": "TC_LOGI_007",
+        "category": "logistics",
+        "scenario_type": "core",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "single_primary",
+        "answer_boundary_note_type": "none",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 北京",
+          "MAJOR: missing must_contain_all fragment: 预计"
+        ],
+        "final_response_preview": "这类问题涉及物流确认。请先提供 SKU、OEM 对照号或螺纹规格；如果询问物流费用、免运条件或到货时间，还需要补充收货地区和采购数量。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：请提供具体产品的 SKU、OEM 对照号或螺纹规格，以及收货地区和采购数量。当前信息不全，已转人工客服为您查询到货时效。\n\n参考来源：render_business_rules；llm_safe_rewrite。"
+      },
+      {
+        "case_id": "TC_LOGI_008",
+        "category": "logistics",
+        "scenario_type": "core",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "single_primary",
+        "answer_boundary_note_type": "none",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 默认承运商",
+          "MAJOR: missing must_contain_all fragment: 未完成业务核验"
+        ],
+        "final_response_preview": "这类问题涉及物流确认。请先提供 SKU、OEM 对照号或螺纹规格；如果询问物流费用、免运条件或到货时间，还需要补充收货地区和采购数量。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：抱歉，关于默认快递无法直接确认，需要您先提供具体产品的SKU、OEM对照号或螺纹规格，才能查询对应的物流承运商。建议提交这些信息后由人工客服为您核对。\n\n参考来源：render_business_rules；llm_safe_rewrite。"
+      },
+      {
+        "case_id": "TC_LOGI_009",
+        "category": "logistics",
+        "scenario_type": "core",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 照片",
+          "MAJOR: missing must_contain_all fragment: 视频",
+          "MAJOR: missing must_contain_all fragment: 物流破损"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_LOGI_010",
+        "category": "logistics",
+        "scenario_type": "boundary",
+        "expected_module": "logistics",
+        "selected_module": "logistics",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 澳门",
+          "MAJOR: missing must_contain_all fragment: 港澳台",
+          "MAJOR: missing must_contain_all fragment: 特殊地区"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_PRICE_001",
+        "category": "price",
+        "scenario_type": "risk",
+        "expected_module": "price",
+        "selected_module": "price",
+        "answer_strategy_mode": "primary_with_boundary_note",
+        "answer_boundary_note_type": "spec_as_reference_only",
+        "risk_boundary_handled": true,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 人工报价"
+        ],
+        "final_response_preview": "这类问题涉及报价。已识别到 SKU：SKU001。当前系统尚未接入正式价格表，不能直接给出报价。请补充采购数量、定制要求和收货地区后转人工确认。\n\n价格、折扣、成交价和有效期必须以正式价格表、授权报价或人工确认为准。\n\n处理建议：该商品为SKU001，当前系统无法直接提供报价，需人工确认。请提供采购数量、定制要求和收货地区，以便转接人工服务。\n\n参考来源：render_business_rules；llm_safe_rewrite。\n\n补充边界：规格信息只能作为补充参考，不能替代正式报价或人工确认。"
+      },
+      {
+        "case_id": "TC_PRICE_002",
+        "category": "price",
+        "scenario_type": "risk",
+        "expected_module": "price",
+        "selected_module": "price",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: SKU006",
+          "MAJOR: missing must_contain_all fragment: 批发价",
+          "MAJOR: missing any of must_contain_any: ['实时规则核算', '不得直接报价']"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_PRICE_003",
+        "category": "price",
+        "scenario_type": "risk",
+        "expected_module": "price",
+        "selected_module": "price",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 500",
+          "MAJOR: missing must_contain_all fragment: 优惠"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_PRICE_004",
+        "category": "price",
+        "scenario_type": "risk",
+        "expected_module": "price",
+        "selected_module": "price",
+        "answer_strategy_mode": "single_primary",
+        "answer_boundary_note_type": "none",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 人工核算"
+        ],
+        "final_response_preview": "这类问题涉及报价。请先提供 SKU、OEM 对照号或螺纹规格，以及预计采购数量。当前系统尚未接入正式价格表，不能直接给出报价，需要转人工确认。\n\n价格、折扣、成交价和有效期必须以正式价格表、授权报价或人工确认为准。\n\n处理建议：需要您提供产品规格和数量，我将转接人工客服处理报价。\n\n参考来源：render_business_rules；llm_safe_rewrite。"
+      },
+      {
+        "case_id": "TC_PRICE_005",
+        "category": "price",
+        "scenario_type": "risk",
+        "expected_module": "price",
+        "selected_module": "price",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 批发价格表",
+          "MAJOR: missing must_contain_all fragment: 人工报价"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_PRICE_006",
+        "category": "price",
+        "scenario_type": "risk",
+        "expected_module": "price",
+        "selected_module": "price",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 最便宜",
+          "MAJOR: missing must_contain_all fragment: 价格"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_PRICE_007",
+        "category": "price",
+        "scenario_type": "risk",
+        "expected_module": "price",
+        "selected_module": "price",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: SKU020",
+          "MAJOR: missing must_contain_all fragment: 1000",
+          "MAJOR: missing must_contain_all fragment: 人工报价"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_PRICE_008",
+        "category": "price",
+        "scenario_type": "risk",
+        "expected_module": "price",
+        "selected_module": "price",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 老客户",
+          "MAJOR: missing must_contain_all fragment: 报价"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_QUAL_001",
+        "category": "quality",
+        "scenario_type": "core",
+        "expected_module": "quality",
+        "selected_module": "quality",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 改装配件",
+          "MAJOR: missing must_contain_all fragment: 售后配件",
+          "MAJOR: missing any of must_contain_any: ['不能称为原厂件或OEM正品', '适配结论需按车型和规格确认']"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_QUAL_002",
+        "category": "quality",
+        "scenario_type": "core",
+        "expected_module": "quality",
+        "selected_module": "quality",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: SKU001",
+          "MAJOR: missing must_contain_all fragment: 6061铝合金",
+          "MAJOR: missing must_contain_all fragment: 阳极氧化",
+          "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_QUAL_003",
+        "category": "quality",
+        "scenario_type": "core",
+        "expected_module": "quality",
+        "selected_module": "quality",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: TC4钛合金",
+          "MAJOR: missing must_contain_all fragment: 铝合金",
+          "MAJOR: missing must_contain_all fragment: 检测字段",
+          "MAJOR: missing must_contain_all fragment: 人工确认"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_QUAL_004",
+        "category": "quality",
+        "scenario_type": "core",
+        "expected_module": "quality",
+        "selected_module": "quality",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: SKU003",
+          "MAJOR: missing must_contain_all fragment: 真皮",
+          "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_QUAL_005",
+        "category": "quality",
+        "scenario_type": "core",
+        "expected_module": "quality",
+        "selected_module": "quality",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 夜光",
+          "MAJOR: missing must_contain_all fragment: 蓄光",
+          "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_QUAL_006",
+        "category": "quality",
+        "scenario_type": "core",
+        "expected_module": "quality",
+        "selected_module": "quality",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 碳纤维",
+          "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_QUAL_007",
+        "category": "quality",
+        "scenario_type": "core",
+        "expected_module": "quality",
+        "selected_module": "quality",
+        "answer_strategy_mode": "single_primary",
+        "answer_boundary_note_type": "none",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+        ],
+        "final_response_preview": "查到 SKU004：不锈钢子弹头换挡球头。当前系统不能自动承诺不生锈或绝对防锈；如需确认防锈表现，需要结合材质、表面处理、使用环境和维护方式。请转人工进一步确认。\n\n补充说明：SKU004会不会生锈｜SKU004材质304不锈钢 本身耐腐蚀。但镜面抛光面被硬物划伤或长期接触盐水（如冬季融雪剂）可能产生锈点。日常用湿布擦干即可 严重时可使用不锈钢保养膏。；RAG 使用边界。。\n\n质量、外观、耐久表现和使用结果不能仅由 RAG 或 LLM 判断，需以结构化资料、检测记录或人工确认为准。\n\n参考来源：SKU004；quality_qa_qual0004；seed_general_rag_bounda"
+      },
+      {
+        "case_id": "TC_QUAL_008",
+        "category": "quality",
+        "scenario_type": "boundary",
+        "expected_module": "quality",
+        "selected_module": "quality",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 质检报告",
+          "MAJOR: missing must_contain_all fragment: 认证资料",
+          "MAJOR: missing must_contain_all fragment: 实际文件"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_ESCA_001",
+        "category": "escalation",
+        "scenario_type": "core",
+        "expected_module": "escalation",
+        "selected_module": "general",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 投诉",
+          "MAJOR: missing must_contain_all fragment: 客服"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_ESCA_002",
+        "category": "escalation",
+        "scenario_type": "core",
+        "expected_module": "escalation",
+        "selected_module": "general",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 定制",
+          "MAJOR: missing must_contain_all fragment: LOGO",
+          "MAJOR: missing must_contain_all fragment: 500",
+          "MAJOR: missing must_contain_all fragment: 方案"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_ESCA_003",
+        "category": "escalation",
+        "scenario_type": "risk",
+        "expected_module": "escalation",
+        "selected_module": "general",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: 安装损坏",
+          "MAJOR: missing must_contain_all fragment: 赔付",
+          "MAJOR: missing must_contain_all fragment: 人工处理"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      },
+      {
+        "case_id": "TC_SPEC_021",
+        "category": "spec",
+        "scenario_type": "boundary",
+        "expected_module": "spec",
+        "selected_module": "spec",
+        "answer_strategy_mode": "handoff_required",
+        "answer_boundary_note_type": "risk_handoff_required",
+        "risk_boundary_handled": false,
+        "failure_reasons": [
+          "MAJOR: missing must_contain_all fragment: M14",
+          "MAJOR: missing must_contain_all fragment: 无法确认"
+        ],
+        "final_response_preview": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。"
+      }
+    ]
+  },
+  "results": [
+    {
+      "case_id": "TC_SPEC_001",
+      "query": "SKU001铝合金竞技换挡球头的螺纹规格是多少",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU001：铝合金竞技换挡球头。螺纹规格为 M8×1.25，杆长 45.00 mm，球径 50.00 mm，锥度为 无锥度。材质为 铝合金6061，表面处理为 阳极氧化黑色。OEM 对照号为 43330-39585。起订量 1 个，备货状态为现货，发货周期约 2 天。\n\n参考来源：SKU001；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0011:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0009:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0012:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 9991,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_002",
+      "query": "SKU002碳纤维的杆长是多少毫米",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU002：碳纤维圆头换挡球头。螺纹规格为 M10×1.5，杆长 40.00 mm，球径 48.00 mm，锥度为 无锥度。材质为 碳纤维+树脂，表面处理为 高光UV涂层。OEM 对照号为 12345-67890。起订量 1 个，备货状态为现货，发货周期约 2 天。\n\n参考来源：SKU002；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0020:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0009:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0001:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 6422,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_003",
+      "query": "SKU003真皮那款有锥度要求吗 怎么安装",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": true,
+      "handoff_required": false,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": true,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU003：真皮包覆换挡球头。螺纹规格为 M8×1.25，杆长 50.00 mm，球径 52.00 mm，锥度为 1:10。材质为 锌合金内芯+真皮，表面处理为 手工缝制。OEM 对照号为 23456-78901。起订量 2 个，备货状态为现货，发货周期约 2 天。\n\n参考来源：SKU003；render_business_rules。\n\n补充边界：该问题涉及适配、安装、报价、物流、质量、售后、投诉或定制等需要人工确认的信息，请转人工确认后再处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0006:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0016:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0008:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0022:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 1,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 8617,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_004",
+      "query": "SKU004不锈钢子弹头 给我报一下全部参数",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality",
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU004：不锈钢子弹头换挡球头。螺纹规格为 M10×1.5，杆长 55.00 mm，球径 45.00 mm，锥度为 无锥度。材质为 304不锈钢，表面处理为 镜面抛光。OEM 对照号为 34567-89012。起订量 1 个，备货状态为现货，发货周期约 2 天。\n\n参考来源：SKU004；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0019:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0013:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0004:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 20592,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_005",
+      "query": "我想要M12螺纹的球头 你们有哪几款",
+      "category": "spec",
+      "scenario_type": "boundary",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "共查到 18 个匹配产品：\n- SKU007｜铝合金握柄式球头｜M12×1.25｜杆长 60.00 mm｜球径 40.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU013｜真皮打孔换挡球头｜M12×1.25｜杆长 55.00 mm｜球径 54.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n- SKU018｜尼龙耐磨球头｜M12×1.25｜杆长 50.00 mm｜球径 50.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 1 天\n- SKU024｜黄铜复古球头｜M12×1.25｜杆长 54.00 mm｜球径 52.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 1 天\n- SKU030｜钛合金竞技球头｜M12×1.25｜杆长 45.00 mm｜球径 49.00 mm｜锥度 1:20｜现货状态：现货｜发货周期约 1 天\n- SKU035｜真皮圆润换挡球头｜M12×1.25｜杆长 48.00 mm｜球径 56.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 4 天\n- SKU040｜铝合金防滑指槽球头｜M12×1.25｜杆长 48.00 mm｜球径 51.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 4 天\n- SKU048｜尼龙+橡胶防滑球头｜M12×1.25｜杆长 52.00 mm｜球径 54.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 6 天\n- SKU053｜钛合金螺丝纹球头｜M12×1.25｜杆长 44.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 6 天\n- SKU058｜不锈钢拉丝锥形球头｜M12×1.25｜杆长 50.00 mm｜球径 48.00 mm｜锥度 1:15｜现货状态：现货｜发货周期约 2 天\n- SKU063｜真皮+碳纤维拼色球头｜M12×1.25｜杆长 46.00 mm｜球径 52.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU068｜碳纤维三角形球头｜M12×1.25｜杆长 42.00 mm｜球径 55.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU073｜树脂荧光粉球头（强光）｜M12×1.25｜杆长 40.00 mm｜球径 54.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU078｜真皮+铆钉骷髅球头｜M12×1.25｜杆长 52.00 mm｜球径 51.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU083｜碳纤维+透明树脂封层球头｜M12×1.25｜杆长 38.00 mm｜球径 50.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU088｜铝合金发光二极管球头｜M12×1.25｜杆长 52.00 mm｜球径 52.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n- SKU093｜碳纤维半透明磨砂球头｜M12×1.25｜杆长 40.00 mm｜球径 49.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n- SKU098｜碳纤维+24K金箔球头｜M12×1.25｜杆长 42.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n\n补充说明：SPEC0010｜规格问答｜multi_attribute_filter｜是否有不锈钢材质且球径约46mm的球头；SPEC0003｜规格问答｜attribute_filter｜是否有球径大于55mm的换挡球头。\n\n参考来源：M12；spec_qa_spec0010；spec_qa_spec0003；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0022:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0019:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0017:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 10020,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_006",
+      "query": "SKU011适配宝马那款 螺纹和锥度是多少",
+      "category": "spec",
+      "scenario_type": "boundary",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": true,
+      "handoff_required": false,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": true,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU011：不锈钢螺纹防滑球头。螺纹规格为 M10×1.5，杆长 52.00 mm，球径 46.00 mm，锥度为 1:15。材质为 316不锈钢，表面处理为 滚花+镀铬。OEM 对照号为 01234-56789。起订量 2 个，备货状态为现货，发货周期约 3 天。\n\n参考来源：SKU011；render_business_rules。\n\n补充边界：该问题涉及适配、安装、报价、物流、质量、售后、投诉或定制等需要人工确认的信息，请转人工确认后再处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0016:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0021:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0011:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 6251,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_007",
+      "query": "你们最长的杆是多少 哪款",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "共查到 5 个匹配产品：\n- SKU025｜铝合金竞技加长杆球头｜M10×1.5｜杆长 75.00 mm｜球径 46.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 1 天\n- SKU019｜铝合金加高球头｜M10×1.5｜杆长 68.00 mm｜球径 52.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 1 天\n- SKU007｜铝合金握柄式球头｜M12×1.25｜杆长 60.00 mm｜球径 40.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU082｜铝合金椭圆握把球头｜M10×1.5｜杆长 60.00 mm｜球径 42.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU070｜不锈钢抛光子弹球头｜M10×1.5｜杆长 58.00 mm｜球径 45.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n\n补充说明：SPEC0007｜规格问答｜sku_exact_lookup｜SKU005起订量、杆长和球径是多少；SPEC0005｜规格问答｜multi_attribute_filter｜是否有M12×1.25螺纹且杆长约50mm的球头。\n\n参考来源：max_rod_length；spec_qa_spec0007；spec_qa_spec0005；spec_qa_spec0002；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0016:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0022:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 3,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 9028,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_008",
+      "query": "SKU015短杆球头 杆长多少",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU015：铝合金短杆球头。螺纹规格为 M8×1.25，杆长 32.00 mm，球径 44.00 mm，锥度为 无锥度。材质为 铝合金6061，表面处理为 阳极氧化金色。OEM 对照号为 44556-66778。起订量 1 个，备货状态为现货，发货周期约 3 天。\n\n参考来源：SKU015；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0021:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0016:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0012:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 6726,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_009",
+      "query": "SKU043越野大球头的球径是多少",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU043：铝合金越野球头（超大）。螺纹规格为 M10×1.5，杆长 55.00 mm，球径 62.00 mm，锥度为 无锥度。材质为 铝合金6061，表面处理为 阳极氧化军绿色。OEM 对照号为 23232-34343。起订量 1 个，备货状态为现货，发货周期约 6 天。\n\n参考来源：SKU043；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0021:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0016:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0011:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 6713,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_010",
+      "query": "SKU030钛合金竞技球头 有锥度吗 什么材质",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "quality_not_fitment_commitment",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec",
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU030：钛合金竞技球头。螺纹规格为 M12×1.25，杆长 45.00 mm，球径 49.00 mm，锥度为 1:20。材质为 TC4钛合金，表面处理为 抛光+激光LOGO。OEM 对照号为 91357-02468。起订量 3 个，备货状态为现货，发货周期约 1 天。\n\n参考来源：SKU030；render_business_rules。\n\n补充边界：质量说明不能替代适配确认。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0011:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0008:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0009:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 10127,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_011",
+      "query": "你们钛合金材质的球头有哪些款",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "共查到 9 个匹配产品：\n- SKU006｜钛合金磨砂球头｜M10×1.5｜杆长 42.00 mm｜球径 49.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU017｜钛合金烧蓝球头｜M8×1.25｜杆长 44.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n- SKU030｜钛合金竞技球头｜M12×1.25｜杆长 45.00 mm｜球径 49.00 mm｜锥度 1:20｜现货状态：现货｜发货周期约 1 天\n- SKU039｜钛合金烧蓝龙头球头｜M10×1.5｜杆长 52.00 mm｜球径 50.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 4 天\n- SKU053｜钛合金螺丝纹球头｜M12×1.25｜杆长 44.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 6 天\n- SKU062｜钛合金古铜球头｜M10×1.5｜杆长 48.00 mm｜球径 49.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU072｜钛合金镂空编织球头｜M10×1.5｜杆长 46.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU080｜钛合金彩虹色球头｜M10×1.5｜杆长 46.00 mm｜球径 49.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU092｜钛合金战术防滑纹球头｜M10×1.5｜杆长 44.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n\n补充说明：SPEC0003｜规格问答｜attribute_filter｜是否有球径大于55mm的换挡球头；SPEC0002｜规格问答｜sku_exact_lookup｜SKU006螺纹规格和杆长是多少。\n\n参考来源：钛合金；spec_qa_spec0003；spec_qa_spec0002；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0022:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0011:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0001:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 16884,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_012",
+      "query": "SKU033发光球头 LED是什么规格 螺纹多少",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU033：铝合金发光球头。螺纹规格为 M8×1.25，杆长 50.00 mm，球径 52.00 mm，锥度为 无锥度。材质为 铝合金+LED，表面处理为 阳极氧化黑色+蓝光。OEM 对照号为 20202-30303。起订量 5 个，备货状态为现货，发货周期约 4 天。\n\n参考来源：SKU033；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0011:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0016:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0009:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 8384,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_013",
+      "query": "SKU064带温控加热的球头 螺纹是多少 USB接口怎么用",
+      "category": "spec",
+      "scenario_type": "boundary",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": true,
+      "handoff_required": false,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": true,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU064：铝合金加热球头（带温控）。螺纹规格为 M8×1.25，杆长 50.00 mm，球径 50.00 mm，锥度为 无锥度。材质为 铝合金+发热片，表面处理为 阳极氧化黑色+USB接口。OEM 对照号为 47474-58585。起订量 5 个，备货状态为现货，发货周期约 2 天。\n\n参考来源：SKU064；render_business_rules。\n\n补充边界：该问题涉及适配、安装、报价、物流、质量、售后、投诉或定制等需要人工确认的信息，请转人工确认后再处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0021:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0014:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0009:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 7668,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_014",
+      "query": "夜光系列的球头螺纹规格都一样吗",
+      "category": "spec",
+      "scenario_type": "boundary",
+      "expected_module": "spec",
+      "selected_module": "quality",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "按产品名称关键词“夜光”查到 7 个具体SKU：\n- SKU005｜夜光树脂换挡球头｜螺纹规格 M8×1.25｜杆长 38.00 mm｜球径 50.00 mm\n- SKU012｜夜光铝合金球头｜螺纹规格 M8×1.25｜杆长 40.00 mm｜球径 50.00 mm\n- SKU023｜夜光硅胶软球头｜螺纹规格 M10×1.5｜杆长 40.00 mm｜球径 55.00 mm\n- SKU037｜夜光碳纤维球头｜螺纹规格 M10×1.5｜杆长 42.00 mm｜球径 48.00 mm\n- SKU055｜碳纤维+夜光LOGO球头｜螺纹规格 M10×1.5｜杆长 42.00 mm｜球径 50.00 mm\n- SKU059｜树脂夜光骷髅球头｜螺纹规格 M8×1.25｜杆长 46.00 mm｜球径 50.00 mm\n- SKU081｜树脂夜光银河球头｜螺纹规格 M8×1.25｜杆长 44.00 mm｜球径 52.00 mm\n这些具体SKU的螺纹规格不完全一样，包含：M10×1.5、M8×1.25。建议按具体SKU查询后再确认。\n\n补充说明：SKU036蜂窝纹会磨平吗｜SKU036蜂窝纹是树脂成型时的纹路 深度约0.2mm 随着长期使用会逐渐变浅 但正常使用下一般不会完全消失。；SKU008档位标是印上去的吗 会不会磨掉｜SKU008档位标采用激光刻字后填充黑色油墨 表面有阳极氧化层保护。正常使用2年以上正常使用下一般不会磨掉 但指甲硬抠可破坏。。\n\n质量、外观、耐久表现和使用结果不能仅由 RAG 或 LLM 判断，需以结构化资料、检测记录或人工确认为准。\n\n处理建议：根据产品库信息，“夜光”系列共7个SKU，螺纹规格有 M8×1.25 和 M10×1.5 两种，不完全相同。建议您提供具体的SKU编号，方便进一步确认。\n\n参考来源：夜光；quality_qa_qual0036；quality_qa_qual0008；quality_qa_qual0046；quality_qa_qual0024；quality_qa_qual0014；render_business_rules；llm_safe_rewrite。",
+      "response_warnings": [],
+      "risk_flags": [],
+      "retrieved_chunk_count": 5,
+      "used_llm_output": true,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 7485,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: selected_module expected spec, got quality; effective=quality",
+        "MAJOR: missing must_contain_all fragment: M12×1.25"
+      ]
+    },
+    {
+      "case_id": "TC_SPEC_015",
+      "query": "SKU050黄铜锥形球头 锥度是多少 螺纹呢",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU050：黄铜做旧锥形球头。螺纹规格为 M10×1.5，杆长 50.00 mm，球径 50.00 mm，锥度为 1:10。材质为 黄铜，表面处理为 化学做旧+蜡封。OEM 对照号为 90909-01011。起订量 2 个，备货状态为现货，发货周期约 6 天。\n\n参考来源：SKU050；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0011:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0021:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 3,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 7354,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_016",
+      "query": "碳纤维材质的球头螺纹规格有几种",
+      "category": "spec",
+      "scenario_type": "boundary",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "quality_not_fitment_commitment",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec",
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "共查到 18 个匹配产品：\n- SKU002｜碳纤维圆头换挡球头｜M10×1.5｜杆长 40.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU008｜碳纤维D形球头｜M8×1.25｜杆长 38.00 mm｜球径 52.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU014｜全碳纤维竞技球头｜M10×1.5｜杆长 36.00 mm｜球径 46.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n- SKU021｜碳纤维+真皮拼接球头｜M10×1.5｜杆长 46.00 mm｜球径 50.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 1 天\n- SKU027｜碳纤维弧面球头｜M10×1.5｜杆长 38.00 mm｜球径 49.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 1 天\n- SKU034｜碳纤维扁平球头｜M10×1.5｜杆长 35.00 mm｜球径 45.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 4 天\n- SKU037｜夜光碳纤维球头｜M10×1.5｜杆长 42.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 4 天\n- SKU042｜碳纤维+黄铜镶嵌球头｜M10×1.5｜杆长 46.00 mm｜球径 47.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 6 天\n- SKU047｜碳纤维+凯夫拉混编球头｜M10×1.5｜杆长 40.00 mm｜球径 49.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 6 天\n- SKU055｜碳纤维+夜光LOGO球头｜M10×1.5｜杆长 42.00 mm｜球径 50.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU061｜碳纤维扁平握片球头｜M8×1.25｜杆长 34.00 mm｜球径 44.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU063｜真皮+碳纤维拼色球头｜M12×1.25｜杆长 46.00 mm｜球径 52.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU068｜碳纤维三角形球头｜M12×1.25｜杆长 42.00 mm｜球径 55.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU075｜碳纤维+铜粉星云球头｜M10×1.5｜杆长 44.00 mm｜球径 49.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU083｜碳纤维+透明树脂封层球头｜M12×1.25｜杆长 38.00 mm｜球径 50.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU087｜碳纤维异形蝙蝠球头｜M10×1.5｜杆长 45.00 mm｜球径 50.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n- SKU093｜碳纤维半透明磨砂球头｜M12×1.25｜杆长 40.00 mm｜球径 49.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n- SKU098｜碳纤维+24K金箔球头｜M12×1.25｜杆长 42.00 mm｜球径 48.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n\n补充说明：SPEC0007｜规格问答｜sku_exact_lookup｜SKU005起订量、杆长和球径是多少；SPEC0005｜规格问答｜multi_attribute_filter｜是否有M12×1.25螺纹且杆长约50mm的球头。\n\n参考来源：碳纤维；spec_qa_spec0007；spec_qa_spec0005；spec_qa_spec0010；spec_qa_spec0003；render_business_rules。\n\n补充边界：质量说明不能替代适配确认。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0001:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 4,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 11464,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_017",
+      "query": "SKU058不锈钢锥形球头 锥度和螺纹",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "quality_not_fitment_commitment",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec",
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU058：不锈钢拉丝锥形球头。螺纹规格为 M12×1.25，杆长 50.00 mm，球径 48.00 mm，锥度为 1:15。材质为 304不锈钢，表面处理为 拉丝+锥面。OEM 对照号为 88088-99099。起订量 2 个，备货状态为现货，发货周期约 2 天。\n\n参考来源：SKU058；render_business_rules。\n\n补充边界：质量说明不能替代适配确认。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0016:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0014:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0004:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0020:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 1,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 7099,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_018",
+      "query": "你们球径最大的是哪款 多少毫米",
+      "category": "spec",
+      "scenario_type": "boundary",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "共查到 5 个匹配产品：\n- SKU043｜铝合金越野球头（超大）｜M10×1.5｜杆长 55.00 mm｜球径 62.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 6 天\n- SKU036｜铝合金镂空飞碟球头｜M8×1.25｜杆长 40.00 mm｜球径 60.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 4 天\n- SKU074｜铝合金杯型球头（带杯架）｜M8×1.25｜杆长 50.00 mm｜球径 60.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n- SKU016｜树脂水晶球头｜M10×1.5｜杆长 48.00 mm｜球径 58.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 3 天\n- SKU057｜铝合金雪花轮毂造型球头｜M10×1.5｜杆长 52.00 mm｜球径 58.00 mm｜锥度 无锥度｜现货状态：现货｜发货周期约 2 天\n\n补充说明：SPEC0007｜规格问答｜sku_exact_lookup｜SKU005起订量、杆长和球径是多少；SPEC0005｜规格问答｜multi_attribute_filter｜是否有M12×1.25螺纹且杆长约50mm的球头。\n\n参考来源：max_ball_diameter；spec_qa_spec0007；spec_qa_spec0005；spec_qa_spec0002；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0016:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0001:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 3,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 8873,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_019",
+      "query": "SKU022铝合金梯形球头 有锥度要求吗",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU022：铝合金梯形球头。螺纹规格为 M8×1.25，杆长 48.00 mm，球径 48.00 mm，锥度为 1:10。材质为 铝合金6061，表面处理为 阳极氧化灰色。OEM 对照号为 13579-24680。起订量 1 个，备货状态为现货，发货周期约 1 天。\n\n参考来源：SKU022；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0008:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0006:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0013:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 7113,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_SPEC_020",
+      "query": "SKU025加长杆球头 杆长和螺纹",
+      "category": "spec",
+      "scenario_type": "core",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU025：铝合金竞技加长杆球头。螺纹规格为 M10×1.5，杆长 75.00 mm，球径 46.00 mm，锥度为 无锥度。材质为 铝合金6061，表面处理为 阳极氧化红色+防滑纹。OEM 对照号为 46802-35791。起订量 1 个，备货状态为现货，发货周期约 1 天。\n\n参考来源：SKU025；render_business_rules。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0018:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0014:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0009:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0006:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 1,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 7208,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": []
+    },
+    {
+      "case_id": "TC_LOGI_001",
+      "query": "SKU001今天下单多久发货",
+      "category": "logistics",
+      "scenario_type": "core",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "spec_as_shipping_context",
+      "risk_boundary_handled": true,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics",
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU001：铝合金竞技换挡球头。当前备货状态为现货，发货周期约 2 天。该时间仅表示发货周期，不代表到货时间。\n\n补充说明：物流问题需结合结构化规则和人工确认。；售后承诺类问题应人工确认或依据正式规则。。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：根据当前系统查询，SKU001（铝合金竞技换挡球头）的备货状态为现货，发货周期约2天。请注意，此时间为发货周期，不代表到货时间，具体发货以实际订单处理为准。如…\n\n参考来源：SKU001；seed_logistics_boundary；seed_aftersale_boundary；seed_general_rag_boundary；render_business_rules；llm_safe_rewrite。\n\n补充边界：SKU 或规格仅作为物流查询上下文，不代表适配承诺。",
+      "response_warnings": [
+        "rag_chunk_rejected:logistics_qa_logi0001:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 3,
+      "used_llm_output": true,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 16894,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 预计",
+        "MAJOR: missing must_contain_all fragment: 实际揽收"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_002",
+      "query": "能发顺丰吗 我在浙江 要补多少钱",
+      "category": "logistics",
+      "scenario_type": "core",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "price",
+      "answer_candidate_modules": [
+        "price",
+        "logistics"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:price_qa_price0029:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0046:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0036:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0028:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0005:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 6927,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 物流附加费",
+        "MAJOR: missing must_contain_all fragment: 未完成业务核验",
+        "MAJOR: missing must_contain_all fragment: 不能输出补差金额"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_003",
+      "query": "发顺丰去新疆多少差价",
+      "category": "logistics",
+      "scenario_type": "boundary",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "rag_chunk_rejected:logistics_qa_logi0026:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0029:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0039:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 16415,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 新疆",
+        "MAJOR: missing must_contain_all fragment: 物流附加费",
+        "MAJOR: missing must_contain_all fragment: 不能给出金额"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_004",
+      "query": "SKU020现在下单预计什么时候能发",
+      "category": "logistics",
+      "scenario_type": "core",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "spec_as_shipping_context",
+      "risk_boundary_handled": true,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics",
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "当前未识别到可处理的业务问题，请补充 SKU 和具体问题，例如规格、价格、发货或质量。\n\n补充说明：LOGI0042｜物流问答｜shipping_fee｜SKU042发宁夏 运费多少。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：当前无法确认 SKU020 的发货时间，因为缺少该商品的库存、发货规则等可依据信息。请提供完整 SKU 和具体问题，或联系人工客服核实。\n\n参考来源：logistics_qa_logi0042；render_business_rules；llm_safe_rewrite。\n\n补充边界：SKU 或规格仅作为物流查询上下文，不代表适配承诺。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "rag_chunk_rejected:logistics_qa_logi0049:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0017:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0041:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0040:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 1,
+      "used_llm_output": true,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 20064,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 发货周期",
+        "MAJOR: missing must_contain_all fragment: 1天",
+        "MAJOR: missing must_contain_all fragment: 预计",
+        "MAJOR: missing must_contain_all fragment: 实际揽收"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_005",
+      "query": "质量有问题可以退换货吗 运费谁承担",
+      "category": "logistics",
+      "scenario_type": "risk",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics",
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "multiple business intents detected",
+        "rag_chunk_rejected:logistics_qa_logi0046:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0022:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0048:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0044:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0028:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 25410,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 售后",
+        "MAJOR: missing must_contain_all fragment: 运费承担",
+        "MAJOR: missing must_contain_all fragment: 未完成业务核验"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_006",
+      "query": "周六下单周一才发货吗",
+      "category": "logistics",
+      "scenario_type": "core",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": false,
+      "handoff_required": false,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "当前未识别为物流问题，未进入物流处理。\n\n补充说明：LOGI0042｜物流问答｜shipping_fee｜SKU042发宁夏 运费多少。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：根据现有信息，您的问题未被系统识别为物流查询，无法确认发货时间。建议您联系人工客服核实订单发货安排。\n\n参考来源：logistics_qa_logi0042；render_business_rules；llm_safe_rewrite。",
+      "response_warnings": [
+        "rag_chunk_rejected:logistics_qa_logi0044:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0040:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0018:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0050:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 1,
+      "used_llm_output": true,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 14950,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 预计",
+        "MAJOR: missing must_contain_all fragment: lead_time_days",
+        "MAJOR: missing must_contain_all fragment: 实际揽收",
+        "MAJOR: missing any of must_contain_any: ['预计', '实际揽收', '不能保证周一发货']"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_007",
+      "query": "发到北京大概几天到",
+      "category": "logistics",
+      "scenario_type": "core",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "这类问题涉及物流确认。请先提供 SKU、OEM 对照号或螺纹规格；如果询问物流费用、免运条件或到货时间，还需要补充收货地区和采购数量。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：请提供具体产品的 SKU、OEM 对照号或螺纹规格，以及收货地区和采购数量。当前信息不全，已转人工客服为您查询到货时效。\n\n参考来源：render_business_rules；llm_safe_rewrite。",
+      "response_warnings": [
+        "rag_chunk_rejected:logistics_qa_logi0026:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0021:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0049:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0048:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0043:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": true,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 17548,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 北京",
+        "MAJOR: missing must_contain_all fragment: 预计"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_008",
+      "query": "你们默认发什么快递",
+      "category": "logistics",
+      "scenario_type": "core",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "这类问题涉及物流确认。请先提供 SKU、OEM 对照号或螺纹规格；如果询问物流费用、免运条件或到货时间，还需要补充收货地区和采购数量。\n\n物流时效、承运商、运费和配送范围需结合库存、地址、承运商规则或人工确认。\n\n处理建议：抱歉，关于默认快递无法直接确认，需要您先提供具体产品的SKU、OEM对照号或螺纹规格，才能查询对应的物流承运商。建议提交这些信息后由人工客服为您核对。\n\n参考来源：render_business_rules；llm_safe_rewrite。",
+      "response_warnings": [
+        "rag_chunk_rejected:logistics_qa_logi0024:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0011:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0043:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0041:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0015:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": true,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 14907,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 默认承运商",
+        "MAJOR: missing must_contain_all fragment: 未完成业务核验"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_009",
+      "query": "收到货发现外包装破损怎么处理",
+      "category": "logistics",
+      "scenario_type": "core",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "multiple business intents detected",
+        "rag_chunk_rejected:logistics_qa_logi0011:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0024:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0017:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0049:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0032:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 16924,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 照片",
+        "MAJOR: missing must_contain_all fragment: 视频",
+        "MAJOR: missing must_contain_all fragment: 物流破损"
+      ]
+    },
+    {
+      "case_id": "TC_LOGI_010",
+      "query": "能发货到澳门吗",
+      "category": "logistics",
+      "scenario_type": "boundary",
+      "expected_module": "logistics",
+      "selected_module": "logistics",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:logistics_qa_logi0045:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0050:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0049:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0048:high_risk_unverified",
+        "rag_chunk_rejected:logistics_qa_logi0047:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 15556,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 澳门",
+        "MAJOR: missing must_contain_all fragment: 港澳台",
+        "MAJOR: missing must_contain_all fragment: 特殊地区"
+      ]
+    },
+    {
+      "case_id": "TC_PRICE_001",
+      "query": "SKU001这款多少钱一个",
+      "category": "price",
+      "scenario_type": "risk",
+      "expected_module": "price",
+      "selected_module": "price",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "primary_with_boundary_note",
+      "answer_boundary_note_type": "spec_as_reference_only",
+      "risk_boundary_handled": true,
+      "answer_primary_module": "price",
+      "answer_candidate_modules": [
+        "price",
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "这类问题涉及报价。已识别到 SKU：SKU001。当前系统尚未接入正式价格表，不能直接给出报价。请补充采购数量、定制要求和收货地区后转人工确认。\n\n价格、折扣、成交价和有效期必须以正式价格表、授权报价或人工确认为准。\n\n处理建议：该商品为SKU001，当前系统无法直接提供报价，需人工确认。请提供采购数量、定制要求和收货地区，以便转接人工服务。\n\n参考来源：render_business_rules；llm_safe_rewrite。\n\n补充边界：规格信息只能作为补充参考，不能替代正式报价或人工确认。",
+      "response_warnings": [
+        "rag_chunk_rejected:price_qa_price0047:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0028:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0005:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0048:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0033:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": true,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 8989,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 人工报价"
+      ]
+    },
+    {
+      "case_id": "TC_PRICE_002",
+      "query": "我要100个SKU006钛合金球头 批发价多少",
+      "category": "price",
+      "scenario_type": "risk",
+      "expected_module": "price",
+      "selected_module": "price",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:price_qa_price0031:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0006:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0005:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0049:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0047:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 9366,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: SKU006",
+        "MAJOR: missing must_contain_all fragment: 批发价",
+        "MAJOR: missing any of must_contain_any: ['实时规则核算', '不得直接报价']"
+      ]
+    },
+    {
+      "case_id": "TC_PRICE_003",
+      "query": "500个以上有更低的价格吗",
+      "category": "price",
+      "scenario_type": "risk",
+      "expected_module": "price",
+      "selected_module": "price",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "price",
+      "answer_candidate_modules": [
+        "price"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:price_qa_price0049:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0026:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0019:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0009:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0045:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 8537,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 500",
+        "MAJOR: missing must_contain_all fragment: 优惠"
+      ]
+    },
+    {
+      "case_id": "TC_PRICE_004",
+      "query": "你就直接告诉我多少钱 不用废话",
+      "category": "price",
+      "scenario_type": "risk",
+      "expected_module": "price",
+      "selected_module": "price",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "price",
+      "answer_candidate_modules": [
+        "price"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "这类问题涉及报价。请先提供 SKU、OEM 对照号或螺纹规格，以及预计采购数量。当前系统尚未接入正式价格表，不能直接给出报价，需要转人工确认。\n\n价格、折扣、成交价和有效期必须以正式价格表、授权报价或人工确认为准。\n\n处理建议：需要您提供产品规格和数量，我将转接人工客服处理报价。\n\n参考来源：render_business_rules；llm_safe_rewrite。",
+      "response_warnings": [
+        "rag_chunk_rejected:price_qa_price0028:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0011:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0048:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0047:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0033:high_risk_unverified"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": true,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 6819,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 人工核算"
+      ]
+    },
+    {
+      "case_id": "TC_PRICE_005",
+      "query": "你们有没有批发价格表",
+      "category": "price",
+      "scenario_type": "risk",
+      "expected_module": "price",
+      "selected_module": "price",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "price",
+      "answer_candidate_modules": [
+        "price"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:price_qa_price0009:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0035:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0034:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0026:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0022:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 7135,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 批发价格表",
+        "MAJOR: missing must_contain_all fragment: 人工报价"
+      ]
+    },
+    {
+      "case_id": "TC_PRICE_006",
+      "query": "你们最便宜的款式是哪个多少钱",
+      "category": "price",
+      "scenario_type": "risk",
+      "expected_module": "price",
+      "selected_module": "price",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "price",
+      "answer_candidate_modules": [
+        "price"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:price_qa_price0009:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0028:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0012:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0005:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0047:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 6371,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 最便宜",
+        "MAJOR: missing must_contain_all fragment: 价格"
+      ]
+    },
+    {
+      "case_id": "TC_PRICE_007",
+      "query": "需要1000个SKU020 报个价",
+      "category": "price",
+      "scenario_type": "risk",
+      "expected_module": "price",
+      "selected_module": "price",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "rag_chunk_rejected:price_qa_price0046:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0031:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0028:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0005:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0050:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 10560,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: SKU020",
+        "MAJOR: missing must_contain_all fragment: 1000",
+        "MAJOR: missing must_contain_all fragment: 人工报价"
+      ]
+    },
+    {
+      "case_id": "TC_PRICE_008",
+      "query": "我老客户了 给我个实在价",
+      "category": "price",
+      "scenario_type": "risk",
+      "expected_module": "price",
+      "selected_module": "price",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "price",
+      "answer_candidate_modules": [
+        "price"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "rag_chunk_rejected:price_qa_price0049:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0048:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0038:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0032:high_risk_unverified",
+        "rag_chunk_rejected:price_qa_price0028:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 0,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 9799,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 老客户",
+        "MAJOR: missing must_contain_all fragment: 报价"
+      ]
+    },
+    {
+      "case_id": "TC_QUAL_001",
+      "query": "你们的是原厂件吗",
+      "category": "quality",
+      "scenario_type": "core",
+      "expected_module": "quality",
+      "selected_module": "quality",
+      "expected_handoff": false,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 5,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 17007,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 改装配件",
+        "MAJOR: missing must_contain_all fragment: 售后配件",
+        "MAJOR: missing any of must_contain_any: ['不能称为原厂件或OEM正品', '适配结论需按车型和规格确认']"
+      ]
+    },
+    {
+      "case_id": "TC_QUAL_002",
+      "query": "SKU001铝合金6061的质量怎么样 耐用吗",
+      "category": "quality",
+      "scenario_type": "core",
+      "expected_module": "quality",
+      "selected_module": "quality",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality",
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 5,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 16957,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: SKU001",
+        "MAJOR: missing must_contain_all fragment: 6061铝合金",
+        "MAJOR: missing must_contain_all fragment: 阳极氧化",
+        "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+      ]
+    },
+    {
+      "case_id": "TC_QUAL_003",
+      "query": "钛合金和铝合金球头哪个更好 有什么区别",
+      "category": "quality",
+      "scenario_type": "core",
+      "expected_module": "quality",
+      "selected_module": "quality",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 5,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 19987,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: TC4钛合金",
+        "MAJOR: missing must_contain_all fragment: 铝合金",
+        "MAJOR: missing must_contain_all fragment: 检测字段",
+        "MAJOR: missing must_contain_all fragment: 人工确认"
+      ]
+    },
+    {
+      "case_id": "TC_QUAL_004",
+      "query": "SKU003真皮包覆的会不会掉色或者发霉",
+      "category": "quality",
+      "scenario_type": "core",
+      "expected_module": "quality",
+      "selected_module": "quality",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 5,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 9877,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: SKU003",
+        "MAJOR: missing must_contain_all fragment: 真皮",
+        "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+      ]
+    },
+    {
+      "case_id": "TC_QUAL_005",
+      "query": "夜光球头用久了夜光会不会褪色",
+      "category": "quality",
+      "scenario_type": "core",
+      "expected_module": "quality",
+      "selected_module": "quality",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 5,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 21696,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 夜光",
+        "MAJOR: missing must_contain_all fragment: 蓄光",
+        "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+      ]
+    },
+    {
+      "case_id": "TC_QUAL_006",
+      "query": "碳纤维球头会不会开裂 质量怎么样",
+      "category": "quality",
+      "scenario_type": "core",
+      "expected_module": "quality",
+      "selected_module": "quality",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 5,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 15593,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 碳纤维",
+        "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+      ]
+    },
+    {
+      "case_id": "TC_QUAL_007",
+      "query": "SKU004不锈钢的会生锈吗",
+      "category": "quality",
+      "scenario_type": "core",
+      "expected_module": "quality",
+      "selected_module": "quality",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "single_primary",
+      "answer_boundary_note_type": "none",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality",
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": false,
+      "final_response": "查到 SKU004：不锈钢子弹头换挡球头。当前系统不能自动承诺不生锈或绝对防锈；如需确认防锈表现，需要结合材质、表面处理、使用环境和维护方式。请转人工进一步确认。\n\n补充说明：SKU004会不会生锈｜SKU004材质304不锈钢 本身耐腐蚀。但镜面抛光面被硬物划伤或长期接触盐水（如冬季融雪剂）可能产生锈点。日常用湿布擦干即可 严重时可使用不锈钢保养膏。；RAG 使用边界。。\n\n质量、外观、耐久表现和使用结果不能仅由 RAG 或 LLM 判断，需以结构化资料、检测记录或人工确认为准。\n\n参考来源：SKU004；quality_qa_qual0004；seed_general_rag_boundary；seed_aftersale_boundary；render_business_rules。",
+      "response_warnings": [],
+      "risk_flags": [],
+      "retrieved_chunk_count": 3,
+      "used_llm_output": false,
+      "render_mode": "grounded",
+      "render_safety_blocked": false,
+      "latency_ms": 18902,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 缺少检测依据"
+      ]
+    },
+    {
+      "case_id": "TC_QUAL_008",
+      "query": "你们有没有质检报告或者认证",
+      "category": "quality",
+      "scenario_type": "boundary",
+      "expected_module": "quality",
+      "selected_module": "quality",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "quality",
+      "answer_candidate_modules": [
+        "quality"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 5,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 16640,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 质检报告",
+        "MAJOR: missing must_contain_all fragment: 认证资料",
+        "MAJOR: missing must_contain_all fragment: 实际文件"
+      ]
+    },
+    {
+      "case_id": "TC_ESCA_001",
+      "query": "你们是骗子 东西根本用不了 我要差评投诉",
+      "category": "escalation",
+      "scenario_type": "core",
+      "expected_module": "escalation",
+      "selected_module": "general",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": null,
+      "answer_candidate_modules": [],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 15038,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 投诉",
+        "MAJOR: missing must_contain_all fragment: 客服"
+      ]
+    },
+    {
+      "case_id": "TC_ESCA_002",
+      "query": "我想定制一批带我们公司LOGO的球头 500个",
+      "category": "escalation",
+      "scenario_type": "core",
+      "expected_module": "escalation",
+      "selected_module": "general",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": null,
+      "answer_candidate_modules": [],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "no supported business intent detected",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 18230,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 定制",
+        "MAJOR: missing must_contain_all fragment: LOGO",
+        "MAJOR: missing must_contain_all fragment: 500",
+        "MAJOR: missing must_contain_all fragment: 方案"
+      ]
+    },
+    {
+      "case_id": "TC_ESCA_003",
+      "query": "我按照你说的装上去结果球头裂了 你们赔不赔",
+      "category": "escalation",
+      "scenario_type": "risk",
+      "expected_module": "escalation",
+      "selected_module": "general",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "logistics",
+      "answer_candidate_modules": [
+        "logistics"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 2,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 14611,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: 安装损坏",
+        "MAJOR: missing must_contain_all fragment: 赔付",
+        "MAJOR: missing must_contain_all fragment: 人工处理"
+      ]
+    },
+    {
+      "case_id": "TC_SPEC_021",
+      "query": "你们有没有M14螺纹的球头",
+      "category": "spec",
+      "scenario_type": "boundary",
+      "expected_module": "spec",
+      "selected_module": "spec",
+      "expected_handoff": true,
+      "handoff_required": true,
+      "answer_strategy_mode": "handoff_required",
+      "answer_boundary_note_type": "risk_handoff_required",
+      "risk_boundary_handled": false,
+      "answer_primary_module": "spec",
+      "answer_candidate_modules": [
+        "spec"
+      ],
+      "answer_safety_blocked": false,
+      "answer_handoff_required": true,
+      "final_response": "该问题涉及需要进一步确认的信息，不能直接给出确定性答复。为避免给出未经授权的业务承诺，请转人工结合正式数据和业务规则处理。",
+      "response_warnings": [
+        "rag_chunk_rejected:spec_qa_spec0022:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0017:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0023:high_risk_unverified",
+        "rag_chunk_rejected:spec_qa_spec0019:high_risk_unverified",
+        "answer strategy safety gate applied"
+      ],
+      "risk_flags": [],
+      "retrieved_chunk_count": 1,
+      "used_llm_output": false,
+      "render_mode": "answer_strategy_safety_blocked",
+      "render_safety_blocked": true,
+      "latency_ms": 6858,
+      "passed": true,
+      "exception": null,
+      "failure_reasons": [
+        "MAJOR: missing must_contain_all fragment: M14",
+        "MAJOR: missing must_contain_all fragment: 无法确认"
+      ]
+    }
+  ]
+}

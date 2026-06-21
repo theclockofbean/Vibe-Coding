@@ -1,0 +1,147 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: ai-kb-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${DATABASE_NAME:-ai_knowledge_agent}
+      POSTGRES_USER: ${DATABASE_USER:-ai_kb_app}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-ai_kb_password}
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB} -h 127.0.0.1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  qdrant:
+    image: qdrant/qdrant:v1.18.0
+    container_name: ai-kb-qdrant
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:6333:6333"
+      - "127.0.0.1:6334:6334"
+    volumes:
+      - qdrant_storage:/qdrant/storage
+    environment:
+      QDRANT__LOG_LEVEL: INFO
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1:6333/collections || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  bge-m3:
+    image: ghcr.io/huggingface/text-embeddings-inference:cpu-ipex-latest
+    container_name: ai-kb-bge-m3
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8088:80"
+    volumes:
+      - bge_m3_cache:/data
+    command:
+      - "--model-id"
+      - "BAAI/bge-m3"
+      - "--auto-truncate"
+      - "--dtype"
+      - "float32"
+      - "--max-client-batch-size"
+      - "8"
+      - "--max-batch-tokens"
+      - "4096"
+    depends_on:
+      qdrant:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "wget -q --spider http://127.0.0.1/health || wget -q --spider http://127.0.0.1/ || exit 1",
+        ]
+      interval: 20s
+      timeout: 5s
+      retries: 20
+      start_period: 60s
+
+  backend:
+    build:
+      context: ./backend
+    container_name: ai-kb-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8000
+      APP_SECRET_KEY: ${APP_SECRET_KEY:-compose-demo-secret}
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+      DATABASE_NAME: ${DATABASE_NAME:-ai_knowledge_agent}
+      DATABASE_USER: ${DATABASE_USER:-ai_kb_app}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-ai_kb_password}
+      DATABASE_SSLMODE: disable
+      QDRANT_URL: http://qdrant:6333
+      QDRANT_HOST: qdrant
+      QDRANT_HTTP_PORT: 6333
+      EMBEDDING_BASE_URL: http://bge-m3:80
+      EMBEDDING_PROVIDER: local
+      EMBEDDING_MODEL: BAAI/bge-m3
+      EMBEDDING_DIMENSION: 1024
+    ports:
+      - "127.0.0.1:8000:8000"
+    volumes:
+      - ./data:/app/data
+      - ./logs:/app/logs
+    depends_on:
+      postgres:
+        condition: service_healthy
+      qdrant:
+        condition: service_healthy
+      bge-m3:
+        condition: service_healthy
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "python -c \"import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/v1/health/ready', timeout=10).read()\"",
+        ]
+      interval: 15s
+      timeout: 12s
+      retries: 10
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        VITE_API_BASE_URL: ""
+    container_name: ai-kb-frontend
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:8080:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q --spider http://127.0.0.1/healthz || exit 1"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  postgres_data:
+    name: ai_kb_postgres_data
+  qdrant_storage:
+    name: ai_kb_qdrant_storage
+  bge_m3_cache:
+    name: ai_kb_bge_m3_cache

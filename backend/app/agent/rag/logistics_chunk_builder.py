@@ -390,3 +390,10 @@ def parse_bool(
         return False
 
     raise ValueError(f"invalid bool value: {value!r}")
+
+class LogisticsChunkBuilder:
+    def load(self, logistics_file, collection_name="logistics_kb_v1"):
+        return build_logistics_kb_chunks(
+            logistics_file=logistics_file,
+            collection_name=collection_name,
+        )

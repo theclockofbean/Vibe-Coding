@@ -26,7 +26,6 @@ class LLMClientBuildResult:
 
 def build_llm_client_from_env() -> LLMClient:
     """Build LLMClient from environment."""
-
     return build_llm_client_result_from_env().client
 
 
@@ -101,10 +100,21 @@ def _env_bool(
     default: bool,
 ) -> bool:
     """Read boolean env var."""
-
     value = os.getenv(key)
 
     if value is None:
         return default
 
     return value.strip().lower() in {"1", "true", "yes", "on"}
+
+
+# =========================
+# COMPAT LAYER（关键修复）
+# =========================
+
+def build_llm_client():
+    """
+    兼容旧调用入口（RAG / Answer Service）
+    实际统一走 env factory
+    """
+    return build_llm_client_from_env()

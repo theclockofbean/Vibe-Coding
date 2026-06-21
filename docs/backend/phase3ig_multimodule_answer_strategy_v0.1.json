@@ -51,61 +51,90 @@
   "module_pair_rules": [
     {
       "selected_module": "price",
-      "candidate_modules": ["price", "spec"],
+      "candidate_modules": [
+        "price",
+        "spec"
+      ],
       "strategy_mode": "primary_with_boundary_note",
       "boundary_note_type": "spec_as_reference_only"
     },
     {
       "selected_module": "price",
-      "candidate_modules": ["price", "quality"],
+      "candidate_modules": [
+        "price",
+        "quality"
+      ],
       "strategy_mode": "primary_with_boundary_note",
       "boundary_note_type": "quality_as_reference_only"
     },
     {
       "selected_module": "price",
-      "candidate_modules": ["price", "logistics"],
+      "candidate_modules": [
+        "price",
+        "logistics"
+      ],
       "strategy_mode": "safety_blocked",
       "boundary_note_type": "price_logistics_commitment_risk"
     },
     {
       "selected_module": "spec",
-      "candidate_modules": ["spec", "logistics"],
+      "candidate_modules": [
+        "spec",
+        "logistics"
+      ],
       "strategy_mode": "primary_with_boundary_note",
       "boundary_note_type": "logistics_after_fitment_confirmation"
     },
     {
       "selected_module": "spec",
-      "candidate_modules": ["spec", "quality"],
+      "candidate_modules": [
+        "spec",
+        "quality"
+      ],
       "strategy_mode": "primary_with_boundary_note",
       "boundary_note_type": "quality_not_fitment_commitment"
     },
     {
       "selected_module": "spec",
-      "candidate_modules": ["spec", "price"],
+      "candidate_modules": [
+        "spec",
+        "price"
+      ],
       "strategy_mode": "safety_blocked",
       "boundary_note_type": "fitment_before_price_commitment"
     },
     {
       "selected_module": "logistics",
-      "candidate_modules": ["logistics", "quality"],
+      "candidate_modules": [
+        "logistics",
+        "quality"
+      ],
       "strategy_mode": "primary_with_boundary_note",
       "boundary_note_type": "quality_issue_not_compensation_commitment"
     },
     {
       "selected_module": "logistics",
-      "candidate_modules": ["logistics", "spec"],
+      "candidate_modules": [
+        "logistics",
+        "spec"
+      ],
       "strategy_mode": "primary_with_boundary_note",
       "boundary_note_type": "spec_as_shipping_context"
     },
     {
       "selected_module": "logistics",
-      "candidate_modules": ["logistics", "price"],
+      "candidate_modules": [
+        "logistics",
+        "price"
+      ],
       "strategy_mode": "safety_blocked",
       "boundary_note_type": "shipping_fee_price_commitment_risk"
     },
     {
       "selected_module": "quality",
-      "candidate_modules": ["quality"],
+      "candidate_modules": [
+        "quality"
+      ],
       "strategy_mode": "single_primary",
       "boundary_note_type": "none"
     }
@@ -140,5 +169,64 @@
     "answer_handoff_required",
     "answer_safety_blocked",
     "answer_forbidden_commitment_detected"
+  ],
+  "handoff_risk_fragments": [
+    "适配",
+    "车型",
+    "宝马",
+    "安装",
+    "怎么安装",
+    "怎么装",
+    "装不上",
+    "M14",
+    "USB接口",
+    "温控",
+    "运费",
+    "补差",
+    "差价",
+    "运费谁承担",
+    "退换货",
+    "退货",
+    "换货",
+    "外包装破损",
+    "破损",
+    "压变形",
+    "澳门",
+    "港澳台",
+    "新疆",
+    "顺丰",
+    "报价",
+    "报个价",
+    "批发",
+    "优惠",
+    "便宜",
+    "实在价",
+    "老客户",
+    "1000个",
+    "500个",
+    "原厂",
+    "OEM正品",
+    "质检",
+    "认证",
+    "检测",
+    "检测报告",
+    "质检报告",
+    "寿命",
+    "耐用",
+    "发霉",
+    "开裂",
+    "褪色",
+    "哪个更好",
+    "投诉",
+    "差评",
+    "骗子",
+    "客服",
+    "人工",
+    "售后",
+    "赔",
+    "退款",
+    "定制",
+    "LOGO",
+    "方案"
   ]
 }

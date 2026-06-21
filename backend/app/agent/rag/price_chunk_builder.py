@@ -11,9 +11,23 @@ from openpyxl import load_workbook  # type: ignore[import-untyped]
 DEFAULT_COLLECTION_NAME: Final[str] = "price_kb_v1"
 DEFAULT_SOURCE_NAME: Final[str] = "price_questions.xlsx"
 DEFAULT_SHEET_NAME: Final[str] = "qa_pairs"
-
+from app.agent.rag.chunk_builder_utils import (
+    read_text,
+    split_multi_value,
+    parse_bool,
+    build_chunk_content,
+    infer_risk_level,
+)
 
 @dataclass(frozen=True)
+
+class PriceChunkBuilder:
+    def load(self, price_file, collection_name="price_kb_v1"):
+        return build_price_kb_chunks_from_excel(
+            price_file=price_file,
+            collection_name=collection_name,
+        )
+
 class PriceKBChunk:
     """Price KB chunk."""
 

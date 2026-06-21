@@ -6,11 +6,15 @@ connections or external service clients.
 """
 
 from functools import lru_cache
-from pathlib import Path
 from typing import Final, Literal
 
 from pydantic import Field, SecretStr, field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
+from dotenv import load_dotenv
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parents[2]  # 指向 backend
+load_dotenv(BASE_DIR / ".env")
 
 PROJECT_ROOT: Final[Path] = Path(__file__).resolve().parents[3]
 ENV_FILE: Final[Path] = PROJECT_ROOT / ".env"

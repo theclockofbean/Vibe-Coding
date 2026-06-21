@@ -7,12 +7,31 @@ from pathlib import Path
 from typing import Any, Final
 
 from openpyxl import load_workbook  # type: ignore[import-untyped]
+from app.agent.rag.chunk_builder_utils import (
+    read_text,
+    split_multi_value,
+    parse_bool,
+    build_chunk_content,
+    infer_risk_level,
+)
 
 
 DEFAULT_COLLECTION_NAME: Final[str] = "spec_kb_v1"
 DEFAULT_SOURCE_NAME: Final[str] = "spec_questions.xlsx"
 DEFAULT_SHEET_NAME: Final[str] = "qa_pairs"
 
+
+@dataclass(frozen=True)
+
+class SpecChunkBuilder:
+    def load(self, spec_file, collection_name="spec_kb_v1"):
+        return build_spec_kb_chunks_from_excel(
+            spec_file=spec_file,
+            collection_name=collection_name,
+        )
+
+
+from dataclasses import dataclass
 
 @dataclass(frozen=True)
 class SpecKBChunk:

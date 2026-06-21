@@ -392,3 +392,10 @@ def text(
         return ""
 
     return str(value).strip()
+
+class QualityChunkBuilder:
+    def load(self, quality_file, collection_name="quality_kb_v1"):
+        return build_quality_kb_chunks(
+            quality_file=quality_file,
+            collection_name=collection_name,
+        )

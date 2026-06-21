@@ -10,6 +10,7 @@ from app.api.v1.logistics import router as logistics_router
 from app.api.v1.price import router as price_router
 from app.api.v1.quality import router as quality_router
 from app.api.v1.spec import router as spec_router
+from app.agent.routers.rag_api_router import router as rag_router
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -21,3 +22,9 @@ api_router.include_router(agent_router)
 api_router.include_router(handoff_router)
 api_router.include_router(evaluation_router)
 api_router.include_router(health_router)
+
+api_router.include_router(
+    rag_router,
+    prefix="/rag",
+    tags=["rag"]
+)

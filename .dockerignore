@@ -1,0 +1,9 @@
+.git
+**/__pycache__
+**/*.pyc
+backend/.mypy_cache
+backend/.ruff_cache
+frontend/node_modules
+frontend/dist
+logs
+backups
