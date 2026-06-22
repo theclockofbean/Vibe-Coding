@@ -108,10 +108,6 @@ def _env_bool(
     return value.strip().lower() in {"1", "true", "yes", "on"}
 
 
-# =========================
-# COMPAT LAYER（关键修复）
-# =========================
-
 def build_llm_client():
     """
     兼容旧调用入口（RAG / Answer Service）
